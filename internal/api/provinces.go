@@ -17,46 +17,42 @@ func (rs provincesResource) Routes() chi.Router {
 	r := chi.NewRouter()
 	// r.Use() // some middleware..
 
-	r.Get("/", rs.List)    // GET /provinces - read a list of provinces
-	r.Post("/", rs.Create) // POST /provinces - create a new todo and persist it
-	r.Put("/", rs.Delete)
+	r.With(paginate).Get("/", rs.List) // GET /provinces - read a list of provinces
 
 	r.Route("/{id}", func(r chi.Router) {
-		// r.Use(rs.TodoCtx) // lets have a provinces map, and lets actually load/manipulate
-		r.Get("/", rs.Get)       // GET /provinces/{id} - read a single todo by :id
-		r.Put("/", rs.Update)    // PUT /provinces/{id} - update a single todo by :id
-		r.Delete("/", rs.Delete) // DELETE /provinces/{id} - delete a single todo by :id
-		r.Get("/sync", rs.Sync)
+		// r.Use(rs.ProvinceCtx) // lets have a provinces map, and lets actually load/manipulate
+		r.Get("/", rs.Get) // GET /provinces/{id} - read a single todo by :id
 	})
 
 	return r
 }
 
 func (rs provincesResource) List(w http.ResponseWriter, r *http.Request) {
-	d := rs.Provinces
+	// Get the context from the request
+	ctx := r.Context()
 
-	res, _ := json.Marshal(d)
+	paginationInfo, ok := ctx.Value("pagination").(PaginationInfo)
+	if !ok {
+		// Handle the case where pagination information is not found in the context
+		// You can choose to use default values or return an error response.
+		http.Error(w, "Pagination information not found", http.StatusBadRequest)
+		return
+	}
+
+	// Create the PaginatedResponse using the retrieved data and pagination information
+	response := createPaginatedResponse(rs.Provinces, paginationInfo)
+
+	// Marshal and send the response
+	res, err := json.Marshal(response)
+	if err != nil {
+		http.Error(w, "Error marshaling response", http.StatusInternalServerError)
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(res)
 }
 
-func (rs provincesResource) Create(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("provinces create"))
-}
-
 func (rs provincesResource) Get(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("todo get"))
-}
-
-func (rs provincesResource) Update(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("todo update"))
-}
-
-func (rs provincesResource) Delete(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("todo delete"))
-}
-
-func (rs provincesResource) Sync(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("todo sync"))
+	w.Write([]byte("province get"))
 }

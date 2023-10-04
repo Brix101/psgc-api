@@ -71,8 +71,8 @@ func (a *api) Routes() http.Handler {
 	}))
 
 	r.Route("/", func(r chi.Router) {
-		r.Mount("/cities", a.cityApi.Routes())
 		r.Mount("/barangays", a.barangayApi.Routes())
+		r.Mount("/cities", a.cityApi.Routes())
 		r.Mount("/provinces", a.provinceApi.Routes())
 		r.Mount("/regions", a.regionApi.Routes())
 	})
