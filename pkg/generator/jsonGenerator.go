@@ -12,7 +12,15 @@ import (
 	"github.com/gocarina/gocsv"
 )
 
-type Psgc struct {
+const (
+	Regions     = "regions"
+	Provinces   = "provinces"
+	Cities      = "cities"
+	Barangays   = "barangays"
+	Publication = "aaa-Publication-Datafile"
+)
+
+type GeographicArea struct {
 	PsgcCode     string `csv:"10-digit PSGC" json:"psgcCode"`
 	RegionCode   string `json:"regionCode,omitempty"`
 	ProvinceCode string `json:"provinceCode,omitempty"`
@@ -45,6 +53,7 @@ func InitGenerator(Path string, OutputFolders ...string) *Generator {
 func (g *Generator) GenerateJson() error {
 	path := g.Path
 	outputFolder := g.OutputFolder
+	year := time.Now().Year()
 
 	file, err := os.Open(path)
 	if err != nil {
@@ -52,14 +61,11 @@ func (g *Generator) GenerateJson() error {
 	}
 	defer file.Close()
 
-	psgcData := []*Psgc{}
+	psgcData := []*GeographicArea{}
 
 	if err := gocsv.Unmarshal(file, &psgcData); err != nil {
 		return err
 	}
-
-	year := time.Now().Year()
-	publication := "aaa-Publication-Datafile"
 
 	// Create the output folder if it doesn't exist
 	if err := os.MkdirAll(outputFolder, os.ModePerm); err != nil {
@@ -70,26 +76,26 @@ func (g *Generator) GenerateJson() error {
 	doneCh := make(chan struct{})
 
 	// Define a function to create and write a JSON file
-	createJSONFile := func(level string, data []*Psgc, doneCh chan<- struct{}) {
+	createJSONFile := func(level string, data []*GeographicArea, doneCh chan<- struct{}) {
 		defer wg.Done()
 		var formatLevel string
 
 		switch level {
 		case "Reg":
-			formatLevel = "regions"
+			formatLevel = Regions
 		case "Prov":
 			for i, item := range data {
 				psgcCode := item.PsgcCode
 				data[i].RegionCode = psgcCode[:2] + strings.Repeat("0", len(psgcCode)-2)
 			}
-			formatLevel = "provinces"
+			formatLevel = Provinces
 		case "City":
 			for i, item := range data {
 				psgcCode := item.PsgcCode
 				data[i].RegionCode = psgcCode[:2] + strings.Repeat("0", len(psgcCode)-2)
 				data[i].ProvinceCode = psgcCode[:5] + strings.Repeat("0", len(psgcCode)-5)
 			}
-			formatLevel = "cities"
+			formatLevel = Cities
 		case "Bgy":
 			for i, item := range data {
 				psgcCode := item.PsgcCode
@@ -97,12 +103,12 @@ func (g *Generator) GenerateJson() error {
 				data[i].ProvinceCode = psgcCode[:5] + strings.Repeat("0", len(psgcCode)-5)
 				data[i].CityMunCode = psgcCode[:7] + strings.Repeat("0", len(psgcCode)-7)
 			}
-			formatLevel = "barangays"
+			formatLevel = Barangays
 		default:
 			formatLevel = level
 		}
 
-		if formatLevel != level || level == publication {
+		if formatLevel != level || level == Publication {
 			filename := fmt.Sprintf("%s/%d-%s.json", outputFolder, year, formatLevel)
 
 			// Remove the existing JSON file if it exists
@@ -138,7 +144,7 @@ func (g *Generator) GenerateJson() error {
 
 	// Group data by level and start creating JSON files concurrently
 
-	groupedData := make(map[string][]*Psgc)
+	groupedData := make(map[string][]*GeographicArea)
 	for _, item := range psgcData {
 		level := item.Level
 
@@ -148,7 +154,7 @@ func (g *Generator) GenerateJson() error {
 			}
 			groupedData[level] = append(groupedData[level], item)
 		}
-		groupedData[publication] = append(groupedData[publication], item)
+		groupedData[Publication] = append(groupedData[Publication], item)
 	}
 
 	for level, data := range groupedData {
