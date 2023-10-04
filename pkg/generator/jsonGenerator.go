@@ -18,6 +18,8 @@ const (
 	Cities      = "cities"
 	Barangays   = "barangays"
 	Publication = "aaa-Publication-Datafile"
+	JsonFolder  = "files/json"
+	CsvFolder   = "files/csv"
 )
 
 type GeographicArea struct {
@@ -31,31 +33,21 @@ type GeographicArea struct {
 }
 
 type Generator struct {
-	Path         string
-	OutputFolder string
+	Filename string
 }
 
-func InitGenerator(Path string, OutputFolders ...string) *Generator {
-	var outputFolder string
-
-	if len(OutputFolders) > 0 {
-		outputFolder = OutputFolders[0]
-	} else {
-		outputFolder = "files" // Default value
-	}
-
+func InitGenerator(Filename string) *Generator {
 	return &Generator{
-		Path:         Path,
-		OutputFolder: outputFolder,
+		Filename: Filename,
 	}
 }
 
 func (g *Generator) GenerateJson() error {
-	path := g.Path
-	outputFolder := g.OutputFolder
+	filePath := fmt.Sprintf("%s/%s", CsvFolder, g.Filename)
+	outputFolder := JsonFolder
 	year := time.Now().Year()
 
-	file, err := os.Open(path)
+	file, err := os.Open(filePath)
 	if err != nil {
 		return err
 	}
