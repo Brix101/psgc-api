@@ -1,12 +1,16 @@
 package api
 
 import (
+	"encoding/json"
 	"net/http"
 
+	"github.com/Brix101/psgc-api/pkg/generator"
 	"github.com/go-chi/chi/v5"
 )
 
-type citiesResource struct{}
+type citiesResource struct {
+	Cities []generator.GeographicArea
+}
 
 // Routes creates a REST router for the cities resource
 func (rs citiesResource) Routes() chi.Router {
@@ -29,7 +33,12 @@ func (rs citiesResource) Routes() chi.Router {
 }
 
 func (rs citiesResource) List(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("cities list of stuff.."))
+	d := rs.Cities
+
+	res, _ := json.Marshal(d)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(res)
 }
 
 func (rs citiesResource) Create(w http.ResponseWriter, r *http.Request) {

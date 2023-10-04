@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/Brix101/psgc-api/internal/service"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
@@ -13,11 +14,34 @@ import (
 
 type api struct {
 	logger *zap.Logger
+
+	barangayApi barangaysResource
+	cityApi     citiesResource
+	provinceApi provincesResource
+	regionApi   regionsResource
 }
 
 func NewAPI(_ context.Context, logger *zap.Logger) *api {
+	barangays := service.GetBarangays(logger)
+	cities := service.GetCities(logger)
+	provinces := service.GetProvinces(logger)
+	regions := service.GetRegions(logger)
+
 	return &api{
 		logger: logger,
+
+		barangayApi: barangaysResource{
+			Barangays: barangays,
+		},
+		cityApi: citiesResource{
+			Cities: cities,
+		},
+		provinceApi: provincesResource{
+			Provinces: provinces,
+		},
+		regionApi: regionsResource{
+			Regions: regions,
+		},
 	}
 }
 
@@ -47,10 +71,10 @@ func (a *api) Routes() http.Handler {
 	}))
 
 	r.Route("/", func(r chi.Router) {
-		r.Mount("/regions", regionsResource{}.Routes())
-		r.Mount("/provinces", provincesResource{}.Routes())
-		r.Mount("/cities", citiesResource{}.Routes())
-		r.Mount("/barangays", barangaysResource{}.Routes())
+		r.Mount("/cities", a.cityApi.Routes())
+		r.Mount("/barangays", a.barangayApi.Routes())
+		r.Mount("/provinces", a.provinceApi.Routes())
+		r.Mount("/regions", a.regionApi.Routes())
 	})
 
 	return r
