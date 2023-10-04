@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"reflect"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -89,6 +90,10 @@ func createPaginatedResponse(data interface{}, paginationInfo PaginationInfo) Pa
 	}
 
 	totalPages := (itemCount + perPage - 1) / perPage
+
+	sort.Slice(slicedData, func(i, j int) bool {
+		return slicedData[i].Name < slicedData[j].Name
+	})
 
 	return PaginatedResponse{
 		Meta: struct {
