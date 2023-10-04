@@ -24,4 +24,4 @@ go.work
 
 .env
 ./tmp
-tmp
+/tmp
