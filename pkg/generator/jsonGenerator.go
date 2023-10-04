@@ -7,7 +7,6 @@ import (
 	"sort"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/gocarina/gocsv"
 )
@@ -44,9 +43,6 @@ func InitGenerator(Filename string) *Generator {
 
 func (g *Generator) GenerateJson() error {
 	filePath := fmt.Sprintf("%s/%s", CsvFolder, g.Filename)
-	outputFolder := JsonFolder
-	year := time.Now().Year()
-
 	file, err := os.Open(filePath)
 	if err != nil {
 		return err
@@ -60,7 +56,7 @@ func (g *Generator) GenerateJson() error {
 	}
 
 	// Create the output folder if it doesn't exist
-	if err := os.MkdirAll(outputFolder, os.ModePerm); err != nil {
+	if err := os.MkdirAll(JsonFolder, os.ModePerm); err != nil {
 		return err
 	}
 
@@ -101,7 +97,7 @@ func (g *Generator) GenerateJson() error {
 		}
 
 		if formatLevel != level || level == Publication {
-			filename := fmt.Sprintf("%s/%d-%s.json", outputFolder, year, formatLevel)
+			filename := fmt.Sprintf("%s/%s.json", JsonFolder, formatLevel)
 
 			// Remove the existing JSON file if it exists
 			if err := os.Remove(filename); err != nil && !os.IsNotExist(err) {
