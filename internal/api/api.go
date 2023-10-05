@@ -71,7 +71,7 @@ func (a *api) Routes() http.Handler {
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	}))
 
-	r.Get("/swagger/*", httpSwagger.Handler(
+	r.Get("/docs/*", httpSwagger.Handler(
 		httpSwagger.URL("doc.json"), // The url pointing to API definition
 	))
 
@@ -84,7 +84,7 @@ func (a *api) Routes() http.Handler {
 
 	// Catch-all route for 404 errors, redirect to Swagger
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
-		http.Redirect(w, r, "/swagger/index.html", http.StatusFound)
+		http.Redirect(w, r, "/docs/index.html", http.StatusFound)
 	})
 
 	return r
