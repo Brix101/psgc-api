@@ -22,10 +22,10 @@ func APICmd(ctx context.Context) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if port == 0 {
 				port = 5000
-			}
 
-			if os.Getenv("PORT") != "" {
-				port, _ = strconv.Atoi(os.Getenv("PORT"))
+				if os.Getenv("PORT") != "" {
+					port, _ = strconv.Atoi(os.Getenv("PORT"))
+				}
 			}
 
 			logger := util.NewLogger("api")

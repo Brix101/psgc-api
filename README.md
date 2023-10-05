@@ -61,9 +61,9 @@ To run the PSGC RESTful API, use the following command:
 ./psgc api
 ```
 
-By default, the API will run on port 5000. You can specify a different port using the `--port` option (see [API Command Options](#api-command-options)).
+You can specify a different port using the `--port` option (see [API Command Options](#api-command-options)).
 
-> **Note:** The API primarily uses the port specified in the environment file. If a port is defined in the environment file, that port will be used as the default, and the `--port` flag or the default port will not be used.
+> **Note:** The API default port is `5000`, and if a port is specified in the environment file (e.g., `.env`), that port will be used as the default. However, the `--port` flag can override both the port specified.
 
 ### Running the Json Generator
 
@@ -73,7 +73,9 @@ To generate json files from csv, use the following command:
 ./psgc generate
 ```
 
-By default, the generator will use the default file located at `files/csv/psgc.csv`.You can specify a different port using the `--port` option (see [Generator Command Options](#generator-command-options)).
+You can specify a different port using the `--port` option (see [Generator Command Options](#generator-command-options)).
+
+> **Note:** By default, the generator will use the default file located at `files/csv/psgc.csv`.
 
 ## Options
 
