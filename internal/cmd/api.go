@@ -58,7 +58,7 @@ func APICmd(ctx context.Context) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().IntVar(&port, "port", 5000, "Port number")
+	cmd.Flags().IntVarP(&port, "port", "P", 5000, "Port number")
 
 	return cmd
 }
