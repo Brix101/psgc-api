@@ -96,6 +96,35 @@ paths:
       summary: Show list of Barangays
       tags:
       - barangays
+  /barangays/{psgcCode}:
+    get:
+      consumes:
+      - application/json
+      description: get string by PsgcCode
+      parameters:
+      - description: Barangay psgcCode
+        in: path
+        name: psgcCode
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GeographicArea'
+        "400":
+          description: Item Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Show an barangay
+      tags:
+      - barangays
   /cities:
     get:
       consumes:
@@ -131,6 +160,35 @@ paths:
           schema:
             type: string
       summary: Show list of cities
+      tags:
+      - cities
+  /cities/{psgcCode}:
+    get:
+      consumes:
+      - application/json
+      description: get string by PsgcCode
+      parameters:
+      - description: City PsgcCode
+        in: path
+        name: psgcCode
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GeographicArea'
+        "400":
+          description: Item Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Show an cities
       tags:
       - cities
   /masterlist:
@@ -207,6 +265,35 @@ paths:
       summary: Show list of provinces
       tags:
       - provinces
+  /provinces/{psgcCode}:
+    get:
+      consumes:
+      - application/json
+      description: get string by PsgcCode
+      parameters:
+      - description: Province PsgcCode
+        in: path
+        name: psgcCode
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GeographicArea'
+        "400":
+          description: Item Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Show an provinces
+      tags:
+      - provinces
   /regions:
     get:
       consumes:
@@ -242,6 +329,35 @@ paths:
           schema:
             type: string
       summary: Show list of regions
+      tags:
+      - regions
+  /regions/{psgcCode}:
+    get:
+      consumes:
+      - application/json
+      description: get string by PsgcCode
+      parameters:
+      - description: Region PsgcCode
+        in: path
+        name: psgcCode
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GeographicArea'
+        "400":
+          description: Item Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Show an regions
       tags:
       - regions
 swagger: "2.0"

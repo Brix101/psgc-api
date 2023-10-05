@@ -71,6 +71,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/barangays/{psgcCode}": {
+            "get": {
+                "description": "get string by PsgcCode",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "barangays"
+                ],
+                "summary": "Show an barangay",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Barangay psgcCode",
+                        "name": "psgcCode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/GeographicArea"
+                        }
+                    },
+                    "400": {
+                        "description": "Item Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/cities": {
             "get": {
                 "description": "get cities",
@@ -114,6 +158,50 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/cities/{psgcCode}": {
+            "get": {
+                "description": "get string by PsgcCode",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cities"
+                ],
+                "summary": "Show an cities",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "City PsgcCode",
+                        "name": "psgcCode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/GeographicArea"
+                        }
+                    },
+                    "400": {
+                        "description": "Item Not Found",
                         "schema": {
                             "type": "string"
                         }
@@ -239,6 +327,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/provinces/{psgcCode}": {
+            "get": {
+                "description": "get string by PsgcCode",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "provinces"
+                ],
+                "summary": "Show an provinces",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Province PsgcCode",
+                        "name": "psgcCode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/GeographicArea"
+                        }
+                    },
+                    "400": {
+                        "description": "Item Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/regions": {
             "get": {
                 "description": "get regions",
@@ -282,6 +414,50 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/regions/{psgcCode}": {
+            "get": {
+                "description": "get string by PsgcCode",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "regions"
+                ],
+                "summary": "Show an regions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Region PsgcCode",
+                        "name": "psgcCode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/GeographicArea"
+                        }
+                    },
+                    "400": {
+                        "description": "Item Not Found",
                         "schema": {
                             "type": "string"
                         }

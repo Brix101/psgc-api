@@ -98,6 +98,18 @@ func (rs regResource) List(w http.ResponseWriter, r *http.Request) {
 	w.Write(res)
 }
 
+// ShowRegions godoc
+//	@Summary		Show an regions
+//	@Description	get string by PsgcCode
+//	@Tags			regions
+//	@Accept			json
+//	@Produce		json
+//	@Param			psgcCode	path		string true	"Region PsgcCode"
+//	@Success		200			{object}	generator.GeographicArea
+//	@Failure		400			{object}	string	"Bad Request"
+//	@Failure		400			{object}	string	"Item Not Found"
+//	@Failure		500			{object}	string	"Internal Server Error"
+//	@Router			/regions/{psgcCode} [get]
 func (rs regResource) Get(w http.ResponseWriter, r *http.Request) {
 	// Get the context from the request
 	ctx := r.Context()

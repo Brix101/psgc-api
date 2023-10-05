@@ -97,6 +97,18 @@ func (rs provResource) List(w http.ResponseWriter, r *http.Request) {
 	w.Write(res)
 }
 
+// ShowProvinces godoc
+//	@Summary		Show an provinces
+//	@Description	get string by PsgcCode
+//	@Tags			provinces
+//	@Accept			json
+//	@Produce		json
+//	@Param			psgcCode	path		string true	"Province PsgcCode"
+//	@Success		200			{object}	generator.GeographicArea
+//	@Failure		400			{object}	string	"Bad Request"
+//	@Failure		400			{object}	string	"Item Not Found"
+//	@Failure		500			{object}	string	"Internal Server Error"
+//	@Router			/provinces/{psgcCode} [get]
 func (rs provResource) Get(w http.ResponseWriter, r *http.Request) {
 	// Get the context from the request
 	ctx := r.Context()

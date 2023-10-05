@@ -98,6 +98,18 @@ func (rs brgyResource) List(w http.ResponseWriter, r *http.Request) {
 	w.Write(res)
 }
 
+// ShowBarangay godoc
+//	@Summary		Show an barangay
+//	@Description	get string by PsgcCode
+//	@Tags			barangays
+//	@Accept			json
+//	@Produce		json
+//	@Param			psgcCode	path		string true	"Barangay psgcCode"
+//	@Success		200			{object}	generator.GeographicArea
+//	@Failure		400			{object}	string	"Bad Request"
+//	@Failure		400			{object}	string	"Item Not Found"
+//	@Failure		500			{object}	string	"Internal Server Error"
+//	@Router			/barangays/{psgcCode} [get]
 func (rs brgyResource) Get(w http.ResponseWriter, r *http.Request) {
 	// Get the context from the request
 	ctx := r.Context()
