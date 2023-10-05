@@ -62,7 +62,11 @@ func createPaginatedResponse(data interface{}, PaginationParams PaginationParams
 		v := reflect.ValueOf(item)
 		for i := 0; i < v.NumField(); i++ {
 			field := v.Field(i)
-			value := field.Interface().(string)
+			value, ok := field.Interface().(string)
+			if !ok || len(value) <= 0 {
+				continue
+			}
+
 			if strings.Contains(strings.ToLower(value), strings.ToLower(filter)) {
 				filterChan <- item // Pass teh filtered item to the chanel
 				break
