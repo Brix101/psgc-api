@@ -28,6 +28,7 @@ func (rs barangaysResource) Routes() chi.Router {
 }
 
 // ShowBarangays godoc
+//
 //	@Summary		Show list of Barangays
 //	@Description	get barangays
 //	@Tags			barangays
@@ -42,7 +43,7 @@ func (rs barangaysResource) List(w http.ResponseWriter, r *http.Request) {
 	// Get the context from the request
 	ctx := r.Context()
 
-	pageParams, ok := ctx.Value("pagination").(PaginationParams)
+	pageParams, ok := ctx.Value(PaginationParamsKey).(PaginationParams)
 	if !ok {
 		// Handle the case where pagination information is not found in the context
 		// You can choose to use default values or return an error response.

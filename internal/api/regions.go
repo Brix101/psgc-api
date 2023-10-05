@@ -20,14 +20,25 @@ func (rs regionsResource) Routes() chi.Router {
 	r.With(paginate).Get("/", rs.List) // GET /regions - read a list of regions
 
 	r.Route("/{id}", func(r chi.Router) {
-		// r.Use(rs.RegionCtx) // lets have a regions map, and lets actually load/manipulate
-		r.Get("/", rs.Get) // GET /regions/{id} - read a single todo by :id
+		r.Use(rs.RegionCtx) // lets have a regions map, and lets actually load/manipulate
+		r.Get("/", rs.Get)  // GET /regions/{id} - read a single todo by :id
 	})
 
 	return r
 }
 
+func (rs regionsResource) RegionCtx(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Your middleware logic here, for example, loading/manipulating data.
+		// ...
+
+		// Call the next handler in the chain
+		next.ServeHTTP(w, r)
+	})
+}
+
 // ShowRegions godoc
+//
 //	@Summary		Show list of regions
 //	@Description	get regions
 //	@Tags			regions
@@ -42,7 +53,7 @@ func (rs regionsResource) List(w http.ResponseWriter, r *http.Request) {
 	// Get the context from the request
 	ctx := r.Context()
 
-	pageParams, ok := ctx.Value("pagination").(PaginationParams)
+	pageParams, ok := ctx.Value(PaginationParamsKey).(PaginationParams)
 	if !ok {
 		// Handle the case where pagination information is not found in the context
 		// You can choose to use default values or return an error response.

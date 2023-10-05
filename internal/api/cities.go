@@ -28,6 +28,7 @@ func (rs citiesResource) Routes() chi.Router {
 }
 
 // ShowCities godoc
+//
 //	@Summary		Show list of cities
 //	@Description	get cities
 //	@Tags			cities
@@ -42,7 +43,7 @@ func (rs citiesResource) List(w http.ResponseWriter, r *http.Request) {
 	// Get the context from the request
 	ctx := r.Context()
 
-	pageParams, ok := ctx.Value("pagination").(PaginationParams)
+	pageParams, ok := ctx.Value(PaginationParamsKey).(PaginationParams)
 	if !ok {
 		// Handle the case where pagination information is not found in the context
 		// You can choose to use default values or return an error response.

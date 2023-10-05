@@ -13,8 +13,9 @@ import (
 )
 
 const (
-	DefaultPage    = 1
-	DefaultPerPage = 1000
+	DefaultPage         = 1
+	DefaultPerPage      = 1000
+	PaginationParamsKey = "paginationParams"
 )
 
 type MetaData struct {
@@ -33,9 +34,9 @@ type PaginatedResponse struct {
 //? comment above is for renaming stuct
 
 type PaginationParams struct {
-	Page    int    `example:"1"`
-	PerPage int    `example:"1000"`
-	Filter  string `example:"filter"` // This is filter for all the field in the object GeographicArea
+	Page    int    `json:"page" example:"1"`
+	PerPage int    `json:"perPage" example:"1000"`
+	Filter  string `json:"filter" example:"filter"` // This is filter for all the field in the object GeographicArea
 } //@name PaginationParams
 //? comment above is for renaming stuct
 
@@ -118,12 +119,12 @@ func createPaginatedResponse(data interface{}, PaginationParams PaginationParams
 
 func paginate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Get the "page", "per_page", and "filter" query parameters from the URL
+		// Get the "page", "perPage", and "filter" query parameters from the URL
 		pageParam := r.URL.Query().Get("page")
-		perPageParam := r.URL.Query().Get("per_page")
+		perPageParam := r.URL.Query().Get("perPage")
 		filterParam := r.URL.Query().Get("filter")
 
-		// Parse the "page", "per_page", and "filter" query parameters
+		// Parse the "page", "perPage", and "filter" query parameters
 		page, err := strconv.Atoi(pageParam)
 		if err != nil || page <= 0 {
 			page = DefaultPage
@@ -135,7 +136,7 @@ func paginate(next http.Handler) http.Handler {
 		}
 
 		// Create a context with pagination information and pass it down the chain
-		ctx := context.WithValue(r.Context(), "pagination", PaginationParams{
+		ctx := context.WithValue(r.Context(), PaginationParamsKey, PaginationParams{
 			Page:    page,
 			PerPage: perPage,
 			Filter:  filterParam,
