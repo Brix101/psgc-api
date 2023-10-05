@@ -1,8 +1,8 @@
-# PSGC - Philippine Standard Geographic Code
+# PSGC - Philippine Standard Geographic Code TOOL
 
 PSGC (Philippine Standard Geographic Code) is a Go application for managing geographic data in the Philippines. This command-line tool provides functionality for running a RESTful API and generating JSON files from CSV input.
 
-> **Desctiption:** I created this API as a side project to address the need for efficient geographic data management in the Philippines. Many existing APIs were slow and lacked pagination features, so PSGC was developed to provide a **faster and more robust solution** for geographic data management.
+**Desctiption:** I created this API as a side project to address the need for efficient geographic data management in the Philippines. Many existing APIs were slow and lacked pagination features, so PSGC was developed to provide a **faster and more robust solution** for geographic data management.
 
 **API URL:** [https://psgc-api.onrender.com](https://psgc-api.onrender.com) (Redirects to Swagger Documentation)
 
