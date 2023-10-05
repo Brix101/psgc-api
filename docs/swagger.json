@@ -1,0 +1,298 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Philippine Standard Geographic Code (PSGC) API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "basePath": "/api",
+    "paths": {
+        "/barangays": {
+            "get": {
+                "description": "get barangays",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "barangays"
+                ],
+                "summary": "Show list of Barangays",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "filter",
+                        "name": "filter",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "example": 1,
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "example": 1000,
+                        "name": "perPage",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/PaginatedResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/cities": {
+            "get": {
+                "description": "get cities",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cities"
+                ],
+                "summary": "Show list of cities",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "filter",
+                        "name": "filter",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "example": 1,
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "example": 1000,
+                        "name": "perPage",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/PaginatedResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/provinces": {
+            "get": {
+                "description": "get provinces",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "provinces"
+                ],
+                "summary": "Show list of provinces",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "filter",
+                        "name": "filter",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "example": 1,
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "example": 1000,
+                        "name": "perPage",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/PaginatedResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/regions": {
+            "get": {
+                "description": "get regions",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "regions"
+                ],
+                "summary": "Show list of regions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "filter",
+                        "name": "filter",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "example": 1,
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "example": 1000,
+                        "name": "perPage",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/PaginatedResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "GeographicArea": {
+            "type": "object",
+            "properties": {
+                "cityCode": {
+                    "type": "string",
+                    "nullable": true,
+                    "omitempty": true
+                },
+                "name": {
+                    "type": "string"
+                },
+                "provinceCode": {
+                    "type": "string",
+                    "nullable": true,
+                    "omitempty": true
+                },
+                "psgcCode": {
+                    "type": "string"
+                },
+                "regionCode": {
+                    "type": "string",
+                    "nullable": true,
+                    "omitempty": true
+                }
+            }
+        },
+        "MetaData": {
+            "type": "object",
+            "properties": {
+                "itemCount": {
+                    "type": "integer",
+                    "example": 1000
+                },
+                "page": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "perPage": {
+                    "type": "integer",
+                    "example": 1000
+                },
+                "totalItems": {
+                    "type": "integer",
+                    "example": 10000
+                },
+                "totalPages": {
+                    "type": "integer",
+                    "example": 10
+                }
+            }
+        },
+        "PaginatedResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/GeographicArea"
+                    }
+                },
+                "metadata": {
+                    "$ref": "#/definitions/MetaData"
+                }
+            }
+        }
+    }
+}

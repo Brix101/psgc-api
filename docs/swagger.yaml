@@ -1,0 +1,198 @@
+basePath: /api
+definitions:
+  GeographicArea:
+    properties:
+      cityCode:
+        type: string
+        nullable: true
+        omitempty: true
+      name:
+        type: string
+      provinceCode:
+        type: string
+        nullable: true
+        omitempty: true
+      psgcCode:
+        type: string
+      regionCode:
+        type: string
+        nullable: true
+        omitempty: true
+    type: object
+  MetaData:
+    properties:
+      itemCount:
+        example: 1000
+        type: integer
+      page:
+        example: 1
+        type: integer
+      perPage:
+        example: 1000
+        type: integer
+      totalItems:
+        example: 10000
+        type: integer
+      totalPages:
+        example: 10
+        type: integer
+    type: object
+  PaginatedResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/GeographicArea'
+        type: array
+      metadata:
+        $ref: '#/definitions/MetaData'
+    type: object
+info:
+  contact: {}
+  title: Philippine Standard Geographic Code (PSGC) API
+  version: "1.0"
+paths:
+  /barangays:
+    get:
+      consumes:
+      - application/json
+      description: get barangays
+      parameters:
+      - example: filter
+        in: query
+        name: filter
+        type: string
+      - example: 1
+        in: query
+        name: page
+        type: integer
+      - example: 1000
+        in: query
+        name: perPage
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Show list of Barangays
+      tags:
+      - barangays
+  /cities:
+    get:
+      consumes:
+      - application/json
+      description: get cities
+      parameters:
+      - example: filter
+        in: query
+        name: filter
+        type: string
+      - example: 1
+        in: query
+        name: page
+        type: integer
+      - example: 1000
+        in: query
+        name: perPage
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Show list of cities
+      tags:
+      - cities
+  /provinces:
+    get:
+      consumes:
+      - application/json
+      description: get provinces
+      parameters:
+      - example: filter
+        in: query
+        name: filter
+        type: string
+      - example: 1
+        in: query
+        name: page
+        type: integer
+      - example: 1000
+        in: query
+        name: perPage
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Show list of provinces
+      tags:
+      - provinces
+  /regions:
+    get:
+      consumes:
+      - application/json
+      description: get regions
+      parameters:
+      - example: filter
+        in: query
+        name: filter
+        type: string
+      - example: 1
+        in: query
+        name: page
+        type: integer
+      - example: 1000
+        in: query
+        name: perPage
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Show list of regions
+      tags:
+      - regions
+swagger: "2.0"

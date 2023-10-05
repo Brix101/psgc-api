@@ -27,11 +27,22 @@ func (rs barangaysResource) Routes() chi.Router {
 	return r
 }
 
+// ShowBarangays godoc
+//	@Summary		Show list of Barangays
+//	@Description	get barangays
+//	@Tags			barangays
+//	@Accept			json
+//	@Produce		json
+//	@Param			query	query		PaginationParams	false	"Pagination and filter parameters"
+//	@Success		200		{object}	PaginatedResponse
+//	@Failure		400		{object}	string	"Bad Request"
+//	@Failure		500		{object}	string	"Internal Server Error"
+//	@Router			/barangays [get]
 func (rs barangaysResource) List(w http.ResponseWriter, r *http.Request) {
 	// Get the context from the request
 	ctx := r.Context()
 
-	paginationInfo, ok := ctx.Value("pagination").(PaginationInfo)
+	pageParams, ok := ctx.Value("pagination").(PaginationParams)
 	if !ok {
 		// Handle the case where pagination information is not found in the context
 		// You can choose to use default values or return an error response.
@@ -40,7 +51,7 @@ func (rs barangaysResource) List(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create the PaginatedResponse using the retrieved data and pagination information
-	response := createPaginatedResponse(rs.Barangays, paginationInfo)
+	response := createPaginatedResponse(rs.Barangays, pageParams)
 
 	// Marshal and send the response
 	res, err := json.Marshal(response)

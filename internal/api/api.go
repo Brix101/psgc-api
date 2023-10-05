@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"net/http"
 
+	_ "github.com/Brix101/psgc-api/docs"
 	"github.com/Brix101/psgc-api/internal/service"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/swaggo/http-swagger/v2"
 	"go.uber.org/zap"
 )
 
@@ -65,12 +67,15 @@ func (a *api) Routes() http.Handler {
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"http://*", "https://*"},
 		AllowedMethods:   []string{"GET", "OPTIONS"},
-		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token", "Link"},
 		AllowCredentials: false,
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	}))
 
-	r.Route("/", func(r chi.Router) {
+	r.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL("doc.json"), // The url pointing to API definition
+	))
+
+	r.Route("/api", func(r chi.Router) {
 		r.Mount("/barangays", a.barangayApi.Routes())
 		r.Mount("/cities", a.cityApi.Routes())
 		r.Mount("/provinces", a.provinceApi.Routes())

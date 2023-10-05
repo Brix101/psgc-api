@@ -17,27 +17,32 @@ const (
 	DefaultPerPage = 1000
 )
 
+type MetaData struct {
+	Page       int `json:"page" example:"1"`
+	TotalPages int `json:"totalPages" example:"10"`
+	PerPage    int `json:"perPage" example:"1000"`
+	TotalItems int `json:"totalItems" example:"10000"`
+	ItemCount  int `json:"itemCount" example:"1000"`
+}//@name MetaData
+//? comment above is for renaming stuct
+
 type PaginatedResponse struct {
-	Meta struct {
-		Page       int `json:"page"`
-		TotalPages int `json:"totalPages"`
-		PerPage    int `json:"perPage"`
-		TotalItems int `json:"totalItems"`
-		ItemCount  int `json:"itemCount"`
-	} `json:"meta"`
-	Data interface{} `json:"data"`
-}
+	MetaData MetaData                   `json:"metadata"`
+	Data     []generator.GeographicArea `json:"data"`
+}//@name PaginatedResponse
+//? comment above is for renaming stuct
 
-type PaginationInfo struct {
-	Page    int
-	PerPage int
-	Filter  string
-}
+type PaginationParams struct {
+	Page    int    `example:"1"`
+	PerPage int    `example:"1000"`
+	Filter  string `example:"filter"`
+}//@name PaginationParams
+//? comment above is for renaming stuct
 
-func createPaginatedResponse(data interface{}, paginationInfo PaginationInfo) PaginatedResponse {
-	page := paginationInfo.Page
-	perPage := paginationInfo.PerPage
-	filter := paginationInfo.Filter
+func createPaginatedResponse(data interface{}, PaginationParams PaginationParams) PaginatedResponse {
+	page := PaginationParams.Page
+	perPage := PaginationParams.PerPage
+	filter := PaginationParams.Filter
 
 	// Type assertion to convert the data interface{} to []generator.GeographicArea
 	dataList, ok := data.([]generator.GeographicArea)
@@ -96,13 +101,7 @@ func createPaginatedResponse(data interface{}, paginationInfo PaginationInfo) Pa
 	})
 
 	return PaginatedResponse{
-		Meta: struct {
-			Page       int `json:"page"`
-			TotalPages int `json:"totalPages"`
-			PerPage    int `json:"perPage"`
-			TotalItems int `json:"totalItems"`
-			ItemCount  int `json:"itemCount"`
-		}{
+		MetaData: MetaData{
 			Page:       page,
 			TotalPages: totalPages,
 			PerPage:    perPage,
@@ -132,7 +131,7 @@ func paginate(next http.Handler) http.Handler {
 		}
 
 		// Create a context with pagination information and pass it down the chain
-		ctx := context.WithValue(r.Context(), "pagination", PaginationInfo{
+		ctx := context.WithValue(r.Context(), "pagination", PaginationParams{
 			Page:    page,
 			PerPage: perPage,
 			Filter:  filterParam,
