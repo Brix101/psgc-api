@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/Brix101/psgc-api/internal/generator"
@@ -19,12 +20,25 @@ func (rs citiesResource) Routes() chi.Router {
 
 	r.With(paginate).Get("/", rs.List) // GET /cities - read a list of cities
 
-	r.Route("/{id}", func(r chi.Router) {
-		// r.Use(rs.TodoCtx) // lets have a cities map, and lets actually load/manipulate
-		r.Get("/", rs.Get) // GET /cities/{id} - read a single todo by :id
+	r.Route("/{psgcCode}", func(r chi.Router) {
+		r.Use(rs.CitiesCtx) // lets have a cities map, and lets actually load/manipulate
+		r.Get("/", rs.Get)  // GET /cities/{psgcCode} - read a single todo by :id
 	})
 
 	return r
+}
+
+func (rs citiesResource) CitiesCtx(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		psgcCode := chi.URLParam(r, "psgcCode") // Get the {psgcCode} from the route
+        
+		fmt.Println(psgcCode)
+		// Your middleware logic here, for example, loading/manipulating data.
+		// ...
+
+		// Call the next handler in the chain
+		next.ServeHTTP(w, r)
+	})
 }
 
 // ShowCities godoc
