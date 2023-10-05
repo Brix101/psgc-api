@@ -302,6 +302,10 @@ const docTemplate = `{
                 }
             }
         }
+    },
+    "externalDocs": {
+        "description": "Data used in this API is sourced from PSGC main page",
+        "url": "https://psa.gov.ph/classification/psgc"
     }
 }`
 
@@ -312,7 +316,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/api",
 	Schemes:          []string{},
 	Title:            "Philippine Standard Geographic Code (PSGC) API",
-	Description:      "This is an api based on the Philippine Standard Geographic Code (PSGC) is a systematic classification and coding of geographic areas in the Philippines. Its units of classification are based on the four well-established levels of geographical-political subdivisions of the country such as the region, the province, the municipality/city and the barangay..",
+	Description:      "This API is based on the Philippine Standard Geographic Code (PSGC), which is a systematic classification and coding of geographic areas in the Philippines. Its units of classification are based on the four well-established levels of geographical-political subdivisions of the country, including the region, the province, the municipality/city, and the barangay.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
