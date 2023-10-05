@@ -6,7 +6,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/Brix101/psgc-api/pkg/generator"
+	"github.com/Brix101/psgc-api/internal/generator"
 	"go.uber.org/zap"
 )
 

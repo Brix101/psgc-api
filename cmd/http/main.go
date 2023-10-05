@@ -11,8 +11,8 @@ import (
 	"time"
 
 	"github.com/Brix101/psgc-api/internal/api"
+	// "github.com/Brix101/psgc-api/internal/generator"
 	"github.com/Brix101/psgc-api/internal/util"
-	// "github.com/Brix101/psgc-api/pkg/generator"
 	"go.uber.org/zap"
 )
 
@@ -22,7 +22,7 @@ func main() {
 		port, _ = strconv.Atoi(os.Getenv("PORT"))
 	}
 
-	// jsonGenerator := generator.InitGenerator("psgc_2023.csv")
+	// jsonGenerator := generator.NewGenerator("psgc_2023.csv")
 	// if err := jsonGenerator.GenerateJson(); err != nil {
 	// 	log.Fatal(err)
 	// }

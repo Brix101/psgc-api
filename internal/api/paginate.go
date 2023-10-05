@@ -9,7 +9,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/Brix101/psgc-api/pkg/generator"
+	"github.com/Brix101/psgc-api/internal/generator"
 )
 
 const (

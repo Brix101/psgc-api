@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/Brix101/psgc-api/pkg/generator"
+	"github.com/Brix101/psgc-api/internal/generator"
 	"github.com/go-chi/chi/v5"
 )
 
