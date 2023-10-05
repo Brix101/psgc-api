@@ -8,16 +8,10 @@ import (
 	"github.com/Brix101/psgc-api/internal/cmd"
 )
 
-//	@title		Philippine Standard Geographic Code (PSGC) API
-//	@version	1.0
-// description This is a sample server Petstore server.
-// termsOfService http://swagger.io/terms/
-
-// contact.name API Support
-// contact.url http://www.swagger.io/support
-// contact.email support@swagger.io
-
-//	@BasePath	/api
+//	@title			Philippine Standard Geographic Code (PSGC) API
+//	@version		1.0
+//	@description	This is an api based on the Philippine Standard Geographic Code (PSGC) is a systematic classification and coding of geographic areas in the Philippines. Its units of classification are based on the four well-established levels of geographical-political subdivisions of the country such as the region, the province, the municipality/city and the barangay..
+//	@BasePath		/api
 func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, os.Kill)
 	defer cancel()
