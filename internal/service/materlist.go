@@ -10,7 +10,8 @@ import (
 	"go.uber.org/zap"
 )
 
-func GetMasterlist(logger *zap.Logger) []generator.GeographicArea {
+func (s *Services) GetMasterlist() []generator.GeographicArea {
+	logger := s.logger
 	filePath := fmt.Sprintf("%s/%s.json", generator.JsonFolder, generator.Masterlist)
 	file, err := os.Open(filePath)
 	if err != nil {

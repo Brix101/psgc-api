@@ -24,12 +24,13 @@ type api struct {
 	masterlistApi masterlistResource
 }
 
-func NewAPI(_ context.Context, logger *zap.Logger) *api {
-	barangays := service.GetBarangays(logger)
-	cities := service.GetCities(logger)
-	provinces := service.GetProvinces(logger)
-	regions := service.GetRegions(logger)
-	masterlist := service.GetMasterlist(logger)
+func NewAPI(ctx context.Context, logger *zap.Logger) *api {
+	srvs := service.NewServices(ctx, logger)
+	barangays := srvs.GetBarangays()
+	cities := srvs.GetCities()
+	provinces := srvs.GetProvinces()
+	regions := srvs.GetRegions()
+	masterlist := srvs.GetMasterlist()
 
 	return &api{
 		logger: logger,

@@ -10,7 +10,8 @@ import (
 	"go.uber.org/zap"
 )
 
-func GetCities(logger *zap.Logger) []generator.GeographicArea {
+func (s *Services) GetCities() []generator.GeographicArea {
+	logger := s.logger
 	filePath := fmt.Sprintf("%s/%s.json", generator.JsonFolder, generator.Cities)
 	file, err := os.Open(filePath)
 	if err != nil {
