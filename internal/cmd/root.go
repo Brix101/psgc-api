@@ -20,7 +20,7 @@ func Execute(ctx context.Context) int {
 	rootCmd := &cobra.Command{
 		Use:   "psgc",
 		Short: "Philippine Standard Geographic Code (PSGC)",
-		PersistentPreRunE: func(_ *cobra.Command, _ []string) error {
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			if !profile {
 				return nil
 			}
@@ -33,7 +33,7 @@ func Execute(ctx context.Context) int {
 			_ = pprof.StartCPUProfile(f)
 			return nil
 		},
-		PersistentPostRunE: func(_ *cobra.Command, _ []string) error {
+		PersistentPostRunE: func(cmd *cobra.Command, args []string) error {
 			if !profile {
 				return nil
 			}

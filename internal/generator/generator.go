@@ -44,8 +44,7 @@ func NewGenerator(Filename string) *Generator {
 }
 
 func (g *Generator) GenerateJson(ctx context.Context, logger *zap.Logger) error {
-	filePath := g.Filename // fmt.Sprintf("%s/%s", CsvFolder, g.Filename)
-	file, err := os.Open(filePath)
+	file, err := os.Open(g.Filename)
 	if err != nil {
 		return err
 	}
@@ -152,6 +151,7 @@ func (g *Generator) GenerateJson(ctx context.Context, logger *zap.Logger) error 
 		wg.Add(1)
 		go createJSONFile(level, data, doneCh)
 	}
+
 	go func() {
 		wg.Wait()
 		close(doneCh)
@@ -162,5 +162,6 @@ func (g *Generator) GenerateJson(ctx context.Context, logger *zap.Logger) error 
 		<-doneCh
 	}
 
+	os.Exit(0)
 	return nil
 }
