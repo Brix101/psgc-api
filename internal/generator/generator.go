@@ -1,6 +1,7 @@
 package generator
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -9,6 +10,7 @@ import (
 	"sync"
 
 	"github.com/gocarina/gocsv"
+	"go.uber.org/zap"
 )
 
 const (
@@ -41,8 +43,8 @@ func NewGenerator(Filename string) *Generator {
 	}
 }
 
-func (g *Generator) GenerateJson() error {
-	filePath := fmt.Sprintf("%s/%s", CsvFolder, g.Filename)
+func (g *Generator) GenerateJson(ctx context.Context, logger *zap.Logger) error {
+	filePath := g.Filename // fmt.Sprintf("%s/%s", CsvFolder, g.Filename)
 	file, err := os.Open(filePath)
 	if err != nil {
 		return err
@@ -124,7 +126,8 @@ func (g *Generator) GenerateJson() error {
 				panic(err)
 			}
 
-			fmt.Printf("%d Data for level '%s' written to %s\n", len(data), level, filename)
+			message := fmt.Sprintf("%d Data for level '%s' written to %s\n", len(data), level, filename)
+			logger.Info(message)
 		}
 		// Notify that this goroutine is done
 		doneCh <- struct{}{}
