@@ -17,10 +17,11 @@ import (
 type api struct {
 	logger *zap.Logger
 
-	barangayApi barangaysResource
-	cityApi     citiesResource
-	provinceApi provincesResource
-	regionApi   regionsResource
+	barangayApi   barangaysResource
+	cityApi       citiesResource
+	provinceApi   provincesResource
+	regionApi     regionsResource
+	masterlistApi masterlistResource
 }
 
 func NewAPI(_ context.Context, logger *zap.Logger) *api {
@@ -28,6 +29,7 @@ func NewAPI(_ context.Context, logger *zap.Logger) *api {
 	cities := service.GetCities(logger)
 	provinces := service.GetProvinces(logger)
 	regions := service.GetRegions(logger)
+	masterlist := service.GetMasterlist(logger)
 
 	return &api{
 		logger: logger,
@@ -43,6 +45,9 @@ func NewAPI(_ context.Context, logger *zap.Logger) *api {
 		},
 		regionApi: regionsResource{
 			Regions: regions,
+		},
+		masterlistApi: masterlistResource{
+			Masterlist: masterlist,
 		},
 	}
 }
@@ -80,6 +85,7 @@ func (a *api) Routes() http.Handler {
 		r.Mount("/cities", a.cityApi.Routes())
 		r.Mount("/provinces", a.provinceApi.Routes())
 		r.Mount("/regions", a.regionApi.Routes())
+		r.Mount("/masterlist", a.masterlistApi.Routes())
 	})
 
 	// Catch-all route for 404 errors, redirect to Swagger

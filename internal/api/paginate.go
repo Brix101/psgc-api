@@ -23,20 +23,20 @@ type MetaData struct {
 	PerPage    int `json:"perPage" example:"1000"`
 	TotalItems int `json:"totalItems" example:"10000"`
 	ItemCount  int `json:"itemCount" example:"1000"`
-}//@name MetaData
+} //@name MetaData
 //? comment above is for renaming stuct
 
 type PaginatedResponse struct {
 	MetaData MetaData                   `json:"metadata"`
 	Data     []generator.GeographicArea `json:"data"`
-}//@name PaginatedResponse
+} //@name PaginatedResponse
 //? comment above is for renaming stuct
 
 type PaginationParams struct {
 	Page    int    `example:"1"`
 	PerPage int    `example:"1000"`
-	Filter  string `example:"filter"`
-}//@name PaginationParams
+	Filter  string `example:"filter"` // This is filter for all the field in the object GeographicArea
+} //@name PaginationParams
 //? comment above is for renaming stuct
 
 func createPaginatedResponse(data interface{}, PaginationParams PaginationParams) PaginatedResponse {

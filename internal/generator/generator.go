@@ -14,24 +14,24 @@ import (
 )
 
 const (
-	Regions     = "regions"
-	Provinces   = "provinces"
-	Cities      = "cities"
-	Barangays   = "barangays"
-	Publication = "aaa-Publication-Datafile"
-	JsonFolder  = "files/json"
-	CsvFolder   = "files/csv"
+	Regions    = "regions"
+	Provinces  = "provinces"
+	Cities     = "cities"
+	Barangays  = "barangays"
+	Masterlist = "masterlist"
+	JsonFolder = "files/json"
+	CsvFolder  = "files/csv"
 )
 
 type GeographicArea struct {
-	PsgcCode     string `csv:"10-digit PSGC" json:"psgcCode"`
+	PsgcCode     string  `csv:"10-digit PSGC" json:"psgcCode"`
 	RegionCode   *string `json:"regionCode,omitempty"  extensions:"x-nullable,x-omitempty"`
 	ProvinceCode *string `json:"provinceCode,omitempty"  extensions:"x-nullable,x-omitempty"`
 	CityCode     *string `json:"cityCode,omitempty"  extensions:"x-nullable,x-omitempty"`
-	Name         string `csv:"Name" json:"name"`
-	Code         string `csv:"Correspondence Code" json:"-"`
-	Level        string `csv:"Geographic Level" json:"-"`
-}//@name GeographicArea
+	Name         string  `csv:"Name" json:"name"`
+	Code         string  `csv:"Correspondence Code" json:"-"`
+	Level        string  `csv:"Geographic Level" json:"-"`
+} //@name GeographicArea
 //? comment above is for renaming stuct
 
 type Generator struct {
@@ -78,7 +78,7 @@ func (g *Generator) GenerateJson(ctx context.Context, logger *zap.Logger) error 
 				psgcCode := item.PsgcCode
 				regionCode := psgcCode[:2] + strings.Repeat("0", len(psgcCode)-2)
 
-				data[i].RegionCode =  &regionCode
+				data[i].RegionCode = &regionCode
 			}
 			formatLevel = Provinces
 		case "City":
@@ -87,8 +87,8 @@ func (g *Generator) GenerateJson(ctx context.Context, logger *zap.Logger) error 
 				regionCode := psgcCode[:2] + strings.Repeat("0", len(psgcCode)-2)
 				provinceCode := psgcCode[:5] + strings.Repeat("0", len(psgcCode)-5)
 
-				data[i].RegionCode =  &regionCode
-				data[i].ProvinceCode =  &provinceCode
+				data[i].RegionCode = &regionCode
+				data[i].ProvinceCode = &provinceCode
 			}
 			formatLevel = Cities
 		case "Bgy":
@@ -98,16 +98,16 @@ func (g *Generator) GenerateJson(ctx context.Context, logger *zap.Logger) error 
 				provinceCode := psgcCode[:5] + strings.Repeat("0", len(psgcCode)-5)
 				cityCode := psgcCode[:7] + strings.Repeat("0", len(psgcCode)-7)
 
-				data[i].RegionCode =  &regionCode
-				data[i].ProvinceCode =  &provinceCode
-				data[i].CityCode =  &cityCode
+				data[i].RegionCode = &regionCode
+				data[i].ProvinceCode = &provinceCode
+				data[i].CityCode = &cityCode
 			}
 			formatLevel = Barangays
 		default:
 			formatLevel = level
 		}
 
-		if formatLevel != level || level == Publication {
+		if formatLevel != level || level == Masterlist {
 			filename := fmt.Sprintf("%s/%s.json", JsonFolder, formatLevel)
 
 			// Remove the existing JSON file if it exists
@@ -154,7 +154,7 @@ func (g *Generator) GenerateJson(ctx context.Context, logger *zap.Logger) error 
 			}
 			groupedData[level] = append(groupedData[level], item)
 		}
-		groupedData[Publication] = append(groupedData[Publication], item)
+		groupedData[Masterlist] = append(groupedData[Masterlist], item)
 	}
 
 	for level, data := range groupedData {

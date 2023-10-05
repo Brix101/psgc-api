@@ -32,6 +32,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "example": "filter",
+                        "description": "This is filter for all the field in the object GeographicArea",
                         "name": "filter",
                         "in": "query"
                     },
@@ -87,6 +88,63 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "example": "filter",
+                        "description": "This is filter for all the field in the object GeographicArea",
+                        "name": "filter",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "example": 1,
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "example": 1000,
+                        "name": "perPage",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/PaginatedResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/masterlist": {
+            "get": {
+                "description": "get masterlist",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "masterlist"
+                ],
+                "summary": "Show list of masterlist",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "filter",
+                        "description": "This is filter for all the field in the object GeographicArea",
                         "name": "filter",
                         "in": "query"
                     },
@@ -142,6 +200,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "example": "filter",
+                        "description": "This is filter for all the field in the object GeographicArea",
                         "name": "filter",
                         "in": "query"
                     },
@@ -197,6 +256,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "example": "filter",
+                        "description": "This is filter for all the field in the object GeographicArea",
                         "name": "filter",
                         "in": "query"
                     },
