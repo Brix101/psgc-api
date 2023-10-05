@@ -1,20 +1,23 @@
 package api
 
 import (
+	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
+	"github.com/Brix101/psgc-api/internal/domain"
 	"github.com/Brix101/psgc-api/internal/generator"
 	"github.com/go-chi/chi/v5"
 )
 
-type barangaysResource struct {
-	Barangays []generator.GeographicArea
-}
+const (
+	FilteredBrgy = "filteredBrgy"
+)
+
+type brgyResource domain.Resource
 
 // Routes creates a REST router for the barangays resource
-func (rs barangaysResource) Routes() chi.Router {
+func (rs brgyResource) Routes() chi.Router {
 	r := chi.NewRouter()
 	// r.Use() // some middleware..
 
@@ -28,16 +31,32 @@ func (rs barangaysResource) Routes() chi.Router {
 	return r
 }
 
-func (rs barangaysResource) BarangayCtx(next http.Handler) http.Handler {
+func (rs brgyResource) BarangayCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		psgcCode := chi.URLParam(r, "psgcCode") // Get the {psgcCode} from the route
-        
-		fmt.Println(psgcCode)
-		// Your middleware logic here, for example, loading/manipulating data.
-		// ...
+		psgcCode := chi.URLParam(r, "psgcCode")                // Get the {psgcCode} from the route
+		filteredItem := make(chan generator.GeographicArea, 1) // Create a channel with buffer size 1
 
-		// Call the next handler in the chain
-		next.ServeHTTP(w, r)
+		// Create a goroutine to filter the data
+		go func() {
+			defer close(filteredItem)
+			for _, item := range rs.Barangays {
+				if item.PsgcCode == psgcCode {
+					filteredItem <- item
+					return // Exit the goroutine once a matching item is found
+				}
+			}
+		}()
+
+		// Receive the filtered item from the channel
+		item, found := <-filteredItem
+		if !found {
+			// No matching item found, return a custom "not found" message
+			http.Error(w, "Item not found", http.StatusNotFound)
+			return
+		}
+
+		ctx := context.WithValue(r.Context(), FilteredBrgy, item)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 
@@ -53,7 +72,7 @@ func (rs barangaysResource) BarangayCtx(next http.Handler) http.Handler {
 //	@Failure		400		{object}	string	"Bad Request"
 //	@Failure		500		{object}	string	"Internal Server Error"
 //	@Router			/barangays [get]
-func (rs barangaysResource) List(w http.ResponseWriter, r *http.Request) {
+func (rs brgyResource) List(w http.ResponseWriter, r *http.Request) {
 	// Get the context from the request
 	ctx := r.Context()
 
@@ -79,6 +98,24 @@ func (rs barangaysResource) List(w http.ResponseWriter, r *http.Request) {
 	w.Write(res)
 }
 
-func (rs barangaysResource) Get(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("barangay get"))
+func (rs brgyResource) Get(w http.ResponseWriter, r *http.Request) {
+	// Get the context from the request
+	ctx := r.Context()
+
+	item, ok := ctx.Value(FilteredBrgy).(generator.GeographicArea)
+	if !ok {
+		// Handle the case where item is not found in the context
+		http.Error(w, "Item not found", http.StatusNotFound)
+		return
+	}
+
+	// Marshal and send the response
+	res, err := json.Marshal(item)
+	if err != nil {
+		http.Error(w, "Error marshaling response", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(res)
 }

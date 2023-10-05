@@ -17,39 +17,25 @@ import (
 type api struct {
 	logger *zap.Logger
 
-	barangayApi   barangaysResource
-	cityApi       citiesResource
-	provinceApi   provincesResource
-	regionApi     regionsResource
-	masterlistApi masterlistResource
+	bgryApi  brgyResource
+	cityApi  cityResource
+	provApi  provResource
+	regApi   regResource
+	mListApi mListResource
 }
 
 func NewAPI(ctx context.Context, logger *zap.Logger) *api {
-	srvs := service.NewServices(ctx, logger)
-	barangays := srvs.GetBarangays()
-	cities := srvs.GetCities()
-	provinces := srvs.GetProvinces()
-	regions := srvs.GetRegions()
-	masterlist := srvs.GetMasterlist()
+	ns := service.NewServices(ctx, logger)
+	re := ns.GetResources()
 
 	return &api{
 		logger: logger,
 
-		barangayApi: barangaysResource{
-			Barangays: barangays,
-		},
-		cityApi: citiesResource{
-			Cities: cities,
-		},
-		provinceApi: provincesResource{
-			Provinces: provinces,
-		},
-		regionApi: regionsResource{
-			Regions: regions,
-		},
-		masterlistApi: masterlistResource{
-			Masterlist: masterlist,
-		},
+		bgryApi:  brgyResource(*re),
+		cityApi:  cityResource(*re),
+		provApi:  provResource(*re),
+		regApi:   regResource(*re),
+		mListApi: mListResource(*re),
 	}
 }
 
@@ -82,11 +68,11 @@ func (a *api) Routes() http.Handler {
 	))
 
 	r.Route("/api", func(r chi.Router) {
-		r.Mount("/barangays", a.barangayApi.Routes())
+		r.Mount("/barangays", a.bgryApi.Routes())
 		r.Mount("/cities", a.cityApi.Routes())
-		r.Mount("/provinces", a.provinceApi.Routes())
-		r.Mount("/regions", a.regionApi.Routes())
-		r.Mount("/masterlist", a.masterlistApi.Routes())
+		r.Mount("/provinces", a.provApi.Routes())
+		r.Mount("/regions", a.regApi.Routes())
+		r.Mount("/masterlist", a.mListApi.Routes())
 	})
 
 	// Catch-all route for 404 errors, redirect to Swagger

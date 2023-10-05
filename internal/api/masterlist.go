@@ -4,16 +4,14 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/Brix101/psgc-api/internal/generator"
+	"github.com/Brix101/psgc-api/internal/domain"
 	"github.com/go-chi/chi/v5"
 )
 
-type masterlistResource struct {
-	Masterlist []generator.GeographicArea
-}
+type mListResource domain.Resource
 
 // Routes creates a REST router for the masterlist resource
-func (rs masterlistResource) Routes() chi.Router {
+func (rs mListResource) Routes() chi.Router {
 	r := chi.NewRouter()
 
 	r.With(paginate).Get("/", rs.List) // GET /masterlist - read a list of masterlist
@@ -33,7 +31,7 @@ func (rs masterlistResource) Routes() chi.Router {
 //	@Failure		400		{object}	string	"Bad Request"
 //	@Failure		500		{object}	string	"Internal Server Error"
 //	@Router			/masterlist [get]
-func (rs masterlistResource) List(w http.ResponseWriter, r *http.Request) {
+func (rs mListResource) List(w http.ResponseWriter, r *http.Request) {
 	// Get the context from the request
 	ctx := r.Context()
 
