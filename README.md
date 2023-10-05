@@ -2,19 +2,44 @@
 
 PSGC (Philippine Standard Geographic Code) is a Go application for managing geographic data in the Philippines. This command-line tool provides functionality for running a RESTful API and generating JSON files from CSV input.
 
+> **Desctiption:** I created this API as a side project to address the need for efficient geographic data management in the Philippines. Many existing APIs were slow and lacked pagination features, so PSGC was developed to provide a **faster and more robust solution** for geographic data management.
+
+**API URL:** [https://psgc-api.onrender.com](https://psgc-api.onrender.com) (Redirects to Swagger Documentation)
+
 ## Table of Contents
 
+- [API Documentation](#api-documentation)
 - [Usage](#usage)
+  - [Usage with Air](#usage-with-air)
+  - [Building](#building)
   - [Running the RESTful API](#running-the-restful-api)
-  - [Generating JSON Files](#generating-json-files)
+  - [Running the Json Generator](#running-the-json-generator)
 - [Options](#options)
+  - [Common Options](#common-options)
   - [API Command Options](#api-command-options)
   - [Generator Command Options](#generator-command-options)
-- [Profiling](#profiling)
-- [Contributing](#contributing)
-- [License](#license)
+
+## API Documentation
+
+The PSGC API is documented using Swagger Docs, providing detailed information about available endpoints, request parameters, and example responses. You can explore the API documentation by following the link below:
+
+[Swagger API Documentation](https://psgc-api.onrender.com/docs/index.html)
+
+> **Note:** Please refer to the Swagger documentation for a comprehensive guide on how to use the API effectively.
 
 ## Usage
+
+### Usage with Air
+
+When developing PSGC, you can use Go's Air tool for hot-reloading during development to run the API, which helps streamline the development process. First, ensure that you have Go installed on your system.
+
+To run the API with Air, follow these steps:
+
+Start the API with Air:
+
+```bash
+air api
+```
 
 ### Building
 
@@ -35,6 +60,8 @@ To run the PSGC RESTful API, use the following command:
 ```
 
 By default, the API will run on port 5000. You can specify a different port using the `--port` option (see [API Command Options](#api-command-options)).
+
+> **Note:** The API primarily uses the port specified in the environment file. If a port is defined in the environment file, that port will be used as the default, and the `--port` flag or the default port will not be used.
 
 ### Running the Json Generator
 
