@@ -82,5 +82,10 @@ func (a *api) Routes() http.Handler {
 		r.Mount("/regions", a.regionApi.Routes())
 	})
 
+	// Catch-all route for 404 errors, redirect to Swagger
+	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/swagger/index.html", http.StatusFound)
+	})
+
 	return r
 }
