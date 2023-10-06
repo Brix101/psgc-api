@@ -61,7 +61,6 @@ func (rs brgyResource) BarangayCtx(next http.Handler) http.Handler {
 }
 
 // ShowBarangays godoc
-//
 //	@Summary		Show list of Barangays
 //	@Description	get barangays
 //	@Tags			barangays

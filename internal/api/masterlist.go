@@ -20,7 +20,6 @@ func (rs mListResource) Routes() chi.Router {
 }
 
 // ShowMasterlist godoc
-//
 //	@Summary		Show list of masterlist
 //	@Description	get masterlist
 //	@Tags			masterlist

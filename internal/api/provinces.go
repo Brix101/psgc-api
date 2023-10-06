@@ -60,7 +60,6 @@ func (rs provResource) ProvinceCtx(next http.Handler) http.Handler {
 }
 
 // ShowProvinces godoc
-//
 //	@Summary		Show list of provinces
 //	@Description	get provinces
 //	@Tags			provinces

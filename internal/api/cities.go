@@ -61,7 +61,6 @@ func (rs cityResource) CitiesCtx(next http.Handler) http.Handler {
 }
 
 // ShowCities godoc
-//
 //	@Summary		Show list of cities
 //	@Description	get cities
 //	@Tags			cities

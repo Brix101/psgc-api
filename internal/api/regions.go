@@ -61,7 +61,6 @@ func (rs regResource) RegionCtx(next http.Handler) http.Handler {
 }
 
 // ShowRegions godoc
-//
 //	@Summary		Show list of regions
 //	@Description	get regions
 //	@Tags			regions
