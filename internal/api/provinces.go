@@ -98,7 +98,7 @@ func (rs provResource) List(w http.ResponseWriter, r *http.Request) {
 }
 
 // ShowProvinces godoc
-//	@Summary		Show an provinces
+//	@Summary		Show a province
 //	@Description	get string by PsgcCode
 //	@Tags			provinces
 //	@Accept			json

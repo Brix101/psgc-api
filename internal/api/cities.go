@@ -99,7 +99,7 @@ func (rs cityResource) List(w http.ResponseWriter, r *http.Request) {
 }
 
 // ShowCities godoc
-//	@Summary		Show an cities
+//	@Summary		Show a city
 //	@Description	get string by PsgcCode
 //	@Tags			cities
 //	@Accept			json

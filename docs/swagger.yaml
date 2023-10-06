@@ -122,7 +122,7 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      summary: Show an barangay
+      summary: Show a barangay
       tags:
       - barangays
   /cities:
@@ -188,7 +188,7 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      summary: Show an cities
+      summary: Show a city
       tags:
       - cities
   /masterlist:
@@ -291,7 +291,7 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      summary: Show an provinces
+      summary: Show a province
       tags:
       - provinces
   /regions:
@@ -357,7 +357,7 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      summary: Show an regions
+      summary: Show a region
       tags:
       - regions
 swagger: "2.0"

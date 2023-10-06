@@ -99,7 +99,7 @@ func (rs brgyResource) List(w http.ResponseWriter, r *http.Request) {
 }
 
 // ShowBarangay godoc
-//	@Summary		Show an barangay
+//	@Summary		Show a barangay
 //	@Description	get string by PsgcCode
 //	@Tags			barangays
 //	@Accept			json

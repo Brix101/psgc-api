@@ -83,7 +83,7 @@ const docTemplate = `{
                 "tags": [
                     "barangays"
                 ],
-                "summary": "Show an barangay",
+                "summary": "Show a barangay",
                 "parameters": [
                     {
                         "type": "string",
@@ -183,7 +183,7 @@ const docTemplate = `{
                 "tags": [
                     "cities"
                 ],
-                "summary": "Show an cities",
+                "summary": "Show a city",
                 "parameters": [
                     {
                         "type": "string",
@@ -339,7 +339,7 @@ const docTemplate = `{
                 "tags": [
                     "provinces"
                 ],
-                "summary": "Show an provinces",
+                "summary": "Show a province",
                 "parameters": [
                     {
                         "type": "string",
@@ -439,7 +439,7 @@ const docTemplate = `{
                 "tags": [
                     "regions"
                 ],
-                "summary": "Show an regions",
+                "summary": "Show a region",
                 "parameters": [
                     {
                         "type": "string",

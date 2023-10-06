@@ -99,7 +99,7 @@ func (rs regResource) List(w http.ResponseWriter, r *http.Request) {
 }
 
 // ShowRegions godoc
-//	@Summary		Show an regions
+//	@Summary		Show a region
 //	@Description	get string by PsgcCode
 //	@Tags			regions
 //	@Accept			json
