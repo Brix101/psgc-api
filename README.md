@@ -42,6 +42,12 @@ Start the API with Air:
 air api
 ```
 
+Start the API with Makefile:
+
+```bash
+make dev
+```
+
 ### Building
 
 Before using PSGC, you need to build the executable binary. Make sure you have Go installed on your system.
@@ -49,7 +55,7 @@ Before using PSGC, you need to build the executable binary. Make sure you have G
 To build PSGC, use the following command:
 
 ```bash
-go build -o psgc ./cmd/http
+make build
 ```
 
 ### Running the RESTful API
