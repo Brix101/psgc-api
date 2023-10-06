@@ -68,7 +68,7 @@ To run the PSGC RESTful API, use the following command:
 
 You can specify a different port using the `--port` option (see [API Command Options](#api-command-options)).
 
-> **Note:** The API default port is `5000`, and if a port is specified in the environment file (e.g., `.env`), that port will be used as the default. However, the `--port` flag can override both the port specified.
+> **Note:** The API's default port is set to 5000. If a port is specified in an environment file (e.g., .env), that port will take precedence as the default. However, you can also use the `--port` flag when running the program, and it will override both the default port and the value specified in the environment file.
 
 ### Running the Json Generator
 
