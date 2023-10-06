@@ -17,4 +17,4 @@ build:
 
 .PHONY: docs
 docs:
-	$(GO_BIN)/swag fmt && $(GO_BIN)/swag init -d ./cmd/http,./internal/api,./internal/generator && ./docs/fix.sh
+	$(GO_BIN)/swag fmt && $(GO_BIN)/swag init -d ./cmd/http,./internal/api,./internal/generator,./internal/domain && ./docs/fix.sh

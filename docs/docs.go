@@ -97,7 +97,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/GeographicArea"
+                            "$ref": "#/definitions/Masterlist"
                         }
                     },
                     "400": {
@@ -197,7 +197,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/GeographicArea"
+                            "$ref": "#/definitions/Masterlist"
                         }
                     },
                     "400": {
@@ -353,7 +353,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/GeographicArea"
+                            "$ref": "#/definitions/Masterlist"
                         }
                     },
                     "400": {
@@ -453,7 +453,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/GeographicArea"
+                            "$ref": "#/definitions/Masterlist"
                         }
                     },
                     "400": {
@@ -473,29 +473,14 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "GeographicArea": {
+        "Masterlist": {
             "type": "object",
             "properties": {
-                "cityCode": {
-                    "type": "string",
-                    "nullable": true,
-                    "omitempty": true
-                },
                 "name": {
                     "type": "string"
                 },
-                "provinceCode": {
-                    "type": "string",
-                    "nullable": true,
-                    "omitempty": true
-                },
                 "psgcCode": {
                     "type": "string"
-                },
-                "regionCode": {
-                    "type": "string",
-                    "nullable": true,
-                    "omitempty": true
                 }
             }
         },
@@ -530,7 +515,7 @@ const docTemplate = `{
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/GeographicArea"
+                        "$ref": "#/definitions/Masterlist"
                     }
                 },
                 "metadata": {
