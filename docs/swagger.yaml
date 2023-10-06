@@ -1,23 +1,11 @@
 basePath: /api
 definitions:
-  GeographicArea:
+  Masterlist:
     properties:
-      cityCode:
-        type: string
-        nullable: true
-        omitempty: true
       name:
         type: string
-      provinceCode:
-        type: string
-        nullable: true
-        omitempty: true
       psgcCode:
         type: string
-      regionCode:
-        type: string
-        nullable: true
-        omitempty: true
     type: object
   MetaData:
     properties:
@@ -41,7 +29,7 @@ definitions:
     properties:
       data:
         items:
-          $ref: '#/definitions/GeographicArea'
+          $ref: '#/definitions/Masterlist'
         type: array
       metadata:
         $ref: '#/definitions/MetaData'
@@ -113,7 +101,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/GeographicArea'
+            $ref: '#/definitions/Masterlist'
         "400":
           description: Item Not Found
           schema:
@@ -179,7 +167,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/GeographicArea'
+            $ref: '#/definitions/Masterlist'
         "400":
           description: Item Not Found
           schema:
@@ -282,7 +270,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/GeographicArea'
+            $ref: '#/definitions/Masterlist'
         "400":
           description: Item Not Found
           schema:
@@ -348,7 +336,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/GeographicArea'
+            $ref: '#/definitions/Masterlist'
         "400":
           description: Item Not Found
           schema:

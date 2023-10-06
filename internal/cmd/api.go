@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"context"
-	"net/http"
 	"os"
 	"strconv"
 	"time"
@@ -27,7 +26,13 @@ func APICmd(ctx context.Context) *cobra.Command {
 			logger := util.NewLogger("api")
 			defer func() { _ = logger.Sync() }()
 
-			api := api.NewAPI(ctx, logger)
+			db, err := util.NewSQLitePool(ctx)
+			if err != nil {
+				return err
+			}
+			defer db.Close()
+
+			api := api.NewAPI(ctx, logger, db)
 			server := api.Server(port)
 
 			// Graceful shutdown with a 30-second timeout
@@ -35,11 +40,8 @@ func APICmd(ctx context.Context) *cobra.Command {
 			defer shutdownCancel()
 
 			// Run the server
+			go func() { _ = server.ListenAndServe() }()
 			logger.Info("🚀🚀🚀 Server at port:", zap.Int("port", port))
-			err := server.ListenAndServe()
-			if err != nil && err != http.ErrServerClosed {
-				logger.Error("Server error:", zap.Error(err))
-			}
 
 			// Wait for the context to be canceled (due to signal or other reasons)
 			<-ctx.Done()
@@ -47,7 +49,7 @@ func APICmd(ctx context.Context) *cobra.Command {
 			// Trigger graceful shutdown
 			err = server.Shutdown(shutdownCtx)
 			if err != nil {
-				logger.Error("Server shutdown error:", zap.Error(err))
+				return err
 			}
 
 			return nil

@@ -9,7 +9,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/Brix101/psgc-api/internal/generator"
+	"github.com/Brix101/psgc-api/internal/domain"
 )
 
 const (
@@ -18,47 +18,28 @@ const (
 	PaginationParamsKey = "paginationParams"
 )
 
-type MetaData struct {
-	Page       int `json:"page" example:"1"`
-	TotalPages int `json:"totalPages" example:"10"`
-	PerPage    int `json:"perPage" example:"1000"`
-	TotalItems int `json:"totalItems" example:"10000"`
-	ItemCount  int `json:"itemCount" example:"1000"`
-} //@name MetaData
-//? comment above is for renaming stuct
-
-type PaginatedResponse struct {
-	MetaData MetaData                   `json:"metadata"`
-	Data     []generator.GeographicArea `json:"data"`
-} //@name PaginatedResponse
-//? comment above is for renaming stuct
-
-type PaginationParams struct {
-	Page    int    `json:"page" example:"1"`
-	PerPage int    `json:"perPage" example:"1000"`
-	Filter  string `json:"filter" example:"filter"` // This is filter for all the field in the object GeographicArea
-} //@name PaginationParams
-//? comment above is for renaming stuct
-
-func createPaginatedResponse(data interface{}, PaginationParams PaginationParams) PaginatedResponse {
+func createPaginatedResponse(
+	data interface{},
+	PaginationParams domain.PaginationParams,
+) domain.PaginatedResponse {
 	page := PaginationParams.Page
 	perPage := PaginationParams.PerPage
 	filter := PaginationParams.Filter
 
-	// Type assertion to convert the data interface{} to []generator.GeographicArea
-	dataList, ok := data.([]generator.GeographicArea)
+	// Type assertion to convert the data interface{} to []domain.Masterlist
+	dataList, ok := data.([]domain.Masterlist)
 	if !ok { // Return an empty response if data is not of the expected type
-		return PaginatedResponse{}
+		return domain.PaginatedResponse{}
 	}
 
 	// Create a channel for sending filtered items and receiving filtered items
-	filterChan := make(chan generator.GeographicArea)
+	filterChan := make(chan domain.Masterlist)
 
 	// Use a WaitGroup to wait for all goroutines to finish
 	var wg sync.WaitGroup
 
 	// Define a function for parallel filtering
-	filterFunc := func(item generator.GeographicArea) {
+	filterFunc := func(item domain.Masterlist) {
 		defer wg.Done()
 		v := reflect.ValueOf(item)
 		for i := 0; i < v.NumField(); i++ {
@@ -88,7 +69,7 @@ func createPaginatedResponse(data interface{}, PaginationParams PaginationParams
 	}()
 
 	totalItems := len(dataList)
-	slicedData := []generator.GeographicArea{}
+	slicedData := []domain.Masterlist{}
 	itemCount := 0
 
 	// Iterate through filtered results and perform pagination
@@ -105,8 +86,8 @@ func createPaginatedResponse(data interface{}, PaginationParams PaginationParams
 		return slicedData[i].Name < slicedData[j].Name
 	})
 
-	return PaginatedResponse{
-		MetaData: MetaData{
+	return domain.PaginatedResponse{
+		MetaData: domain.MetaData{
 			Page:       page,
 			TotalPages: totalPages,
 			PerPage:    perPage,
@@ -135,8 +116,12 @@ func paginate(next http.Handler) http.Handler {
 			perPage = DefaultPerPage
 		}
 
+		if filterParam == "" {
+			filterParam = ""
+		}
+
 		// Create a context with pagination information and pass it down the chain
-		ctx := context.WithValue(r.Context(), PaginationParamsKey, PaginationParams{
+		ctx := context.WithValue(r.Context(), PaginationParamsKey, domain.PaginationParams{
 			Page:    page,
 			PerPage: perPage,
 			Filter:  filterParam,

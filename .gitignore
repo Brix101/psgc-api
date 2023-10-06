@@ -26,3 +26,5 @@ go.work
 .env
 ./tmp
 /tmp
+db/**.db-shm
+db/**.db-wal

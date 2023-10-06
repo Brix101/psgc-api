@@ -6,15 +6,15 @@ import (
 	"net/http"
 
 	"github.com/Brix101/psgc-api/internal/domain"
-	"github.com/Brix101/psgc-api/internal/generator"
 	"github.com/go-chi/chi/v5"
+	"go.uber.org/zap"
 )
 
 const (
-	FilteredRegion = "filteredRegion"
+	RegCtx = "RegCtx"
 )
 
-type regResource domain.Resource
+type regResource apiResource
 
 // Routes creates a REST router for the regions resource
 func (rs regResource) Routes() chi.Router {
@@ -33,34 +33,22 @@ func (rs regResource) Routes() chi.Router {
 
 func (rs regResource) RegionCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		psgcCode := chi.URLParam(r, "psgcCode")                // Get the {psgcCode} from the route
-		filteredItem := make(chan generator.GeographicArea, 1) // Create a channel with buffer size 1
+		ctx := r.Context()
+		psgcCode := chi.URLParam(r, "psgcCode") // Get the {psgcCode} from the route
 
-		// Create a goroutine to filter the data
-		go func() {
-			defer close(filteredItem)
-			for _, item := range rs.Regions {
-				if item.PsgcCode == psgcCode {
-					filteredItem <- item
-					return // Exit the goroutine once a matching item is found
-				}
-			}
-		}()
-
-		// Receive the filtered item from the channel
-		item, found := <-filteredItem
-		if !found {
-			// No matching item found, return a custom "not found" message
-			http.Error(w, "Item not found", http.StatusNotFound)
+		item, err := rs.Repo.GetRegionById(ctx, psgcCode)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusNotFound)
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), FilteredRegion, item)
+		ctx = context.WithValue(ctx, RegCtx, item)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 
 // ShowRegions godoc
+//
 //	@Summary		Show list of regions
 //	@Description	get regions
 //	@Tags			regions
@@ -75,7 +63,7 @@ func (rs regResource) List(w http.ResponseWriter, r *http.Request) {
 	// Get the context from the request
 	ctx := r.Context()
 
-	pageParams, ok := ctx.Value(PaginationParamsKey).(PaginationParams)
+	pageParams, ok := ctx.Value(PaginationParamsKey).(domain.PaginationParams)
 	if !ok {
 		// Handle the case where pagination information is not found in the context
 		// You can choose to use default values or return an error response.
@@ -83,11 +71,15 @@ func (rs regResource) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Create the PaginatedResponse using the retrieved data and pagination information
-	response := createPaginatedResponse(rs.Regions, pageParams)
+	data, err := rs.Repo.GetRegionList(ctx, pageParams)
+	if err != nil {
+		rs.logger.Error("failed to fetch regions from database", zap.Error(err))
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	// Marshal and send the response
-	res, err := json.Marshal(response)
+	res, err := json.Marshal(data)
 	if err != nil {
 		http.Error(w, "Error marshaling response", http.StatusInternalServerError)
 		return
@@ -98,13 +90,14 @@ func (rs regResource) List(w http.ResponseWriter, r *http.Request) {
 }
 
 // ShowRegions godoc
+//
 //	@Summary		Show a region
 //	@Description	get string by PsgcCode
 //	@Tags			regions
 //	@Accept			json
 //	@Produce		json
 //	@Param			psgcCode	path		string true	"Region PsgcCode"
-//	@Success		200			{object}	generator.GeographicArea
+//	@Success		200			{object}	domain.Masterlist
 //	@Failure		400			{object}	string	"Bad Request"
 //	@Failure		400			{object}	string	"Item Not Found"
 //	@Failure		500			{object}	string	"Internal Server Error"
@@ -113,7 +106,7 @@ func (rs regResource) Get(w http.ResponseWriter, r *http.Request) {
 	// Get the context from the request
 	ctx := r.Context()
 
-	item, ok := ctx.Value(FilteredRegion).(generator.GeographicArea)
+	item, ok := ctx.Value(RegCtx).(domain.Masterlist)
 	if !ok {
 		// Handle the case where item is not found in the context
 		http.Error(w, "Item not found", http.StatusNotFound)

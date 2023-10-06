@@ -1,6 +1,6 @@
 # PSGC TOOL / PSGC API
 
-PSGC (Philippine Standard Geographic Code) Tool is a Go application for managing geographic data in the Philippines. This command-line tool provides functionality for running a RESTful API and generating JSON files from CSV input. All the data used in this app is sourced from
+PSGC (Philippine Standard Geographic Code) Tool is a Go application for managing geographic data in the Philippines. This command-line tool provides functionality for running a RESTful API and generating data from CSV input. All the data used in this app is sourced from
 **[ Philippine Statistics Authority](https://psada.psa.gov.ph/psgc).**
 
 > **Desctiption:** I created this tool as a side project to address the need for efficient data management. Many existing APIs were slow and lacked pagination features, so this tool was developed to provide a **faster and more robust solution** for data management.
@@ -14,7 +14,7 @@ PSGC (Philippine Standard Geographic Code) Tool is a Go application for managing
   - [Usage with Air](#usage-with-air)
   - [Building](#building)
   - [Running the RESTful API](#running-the-restful-api)
-  - [Running the Json Generator](#running-the-json-generator)
+  - [Running the data Generator](#running-the-data-generator)
 - [Options](#options)
   - [Common Options](#common-options)
   - [API Command Options](#api-command-options)
@@ -70,9 +70,9 @@ You can specify a different port using the `--port` option (see [API Command Opt
 
 > **Note:** The API's default port is set to 5000. If a port is specified in an environment file (e.g., .env), that port will take precedence as the default. However, you can also use the `--port` flag when running the program, and it will override both the default port and the value specified in the environment file.
 
-### Running the Json Generator
+### Running the data Generator
 
-To generate json files from csv, use the following command:
+To generate data from csv, use the following command:
 
 ```bash
 ./psgc generate
@@ -94,4 +94,4 @@ You can specify a different port using the `--port` option (see [Generator Comma
 
 ### Generator Command Options
 
-- `--file, -f`: Specify the path to the CSV input file for JSON generation. If not provided, the generator will use the default file located at `files/csv/psgc.csv`.
+- `--file, -f`: Specify the path to the CSV input file for DATA generation. If not provided, the generator will use the default file located at `files/csv/psgc.csv`.

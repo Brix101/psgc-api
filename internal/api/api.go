@@ -2,17 +2,24 @@ package api
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"net/http"
 
 	_ "github.com/Brix101/psgc-api/docs"
-	"github.com/Brix101/psgc-api/internal/service"
+	"github.com/Brix101/psgc-api/internal/domain"
+	"github.com/Brix101/psgc-api/internal/repository"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"github.com/swaggo/http-swagger/v2"
 	"go.uber.org/zap"
 )
+
+type apiResource struct {
+	logger *zap.Logger
+	Repo domain.MasterlistRepository
+}
 
 type api struct {
 	logger *zap.Logger
@@ -24,18 +31,22 @@ type api struct {
 	mListApi mListResource
 }
 
-func NewAPI(ctx context.Context, logger *zap.Logger) *api {
-	ns := service.NewServices(ctx, logger)
-	re := ns.GetResources()
+func NewAPI(ctx context.Context, logger *zap.Logger, db *sql.DB) *api {
+	dbMl := repository.NewDBMasterlist(db)
+
+	aRs := apiResource{
+		logger: logger,
+		Repo: dbMl,
+	}
 
 	return &api{
 		logger: logger,
 
-		bgryApi:  brgyResource(*re),
-		cityApi:  cityResource(*re),
-		provApi:  provResource(*re),
-		regApi:   regResource(*re),
-		mListApi: mListResource(*re),
+		bgryApi:  brgyResource(aRs),
+		cityApi:  cityResource(aRs),
+		provApi:  provResource(aRs),
+		regApi:   regResource(aRs),
+		mListApi: mListResource(aRs),
 	}
 }
 
