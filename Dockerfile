@@ -8,7 +8,9 @@ RUN go mod download
 COPY . .
 
 # Build
-RUN CGO_ENABLED=1 GOOS=linux go build -o /psgc ./cmd/http
+
+RUN apk add --no-cache gcc g++ git openssh-client
+RUN GO111MODULE=on CGO_ENABLED=1 GOOS=linux go build -ldflags="-w -s" -o /psgc ./cmd/http
 
 # Stage 2: Create a lightweight final image
 FROM alpine:3.14.2
