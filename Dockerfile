@@ -7,8 +7,8 @@ RUN go mod download
 # Copy the entire project including nested Go files
 COPY . .
 
-# Build
-RUN CGO_ENABLED=0 GOOS=linux go build -o /psgc ./cmd/http
+# Build with CGo enabled
+RUN GOOS=linux go build -o /psgc ./cmd/http
 
 # Stage 2: Create a lightweight final image
 FROM alpine:3.14.2
