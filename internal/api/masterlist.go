@@ -6,9 +6,10 @@ import (
 
 	"github.com/Brix101/psgc-api/internal/domain"
 	"github.com/go-chi/chi/v5"
+	"go.uber.org/zap"
 )
 
-type mListResource domain.Resource
+type mListResource apiResource
 
 // Routes creates a REST router for the masterlist resource
 func (rs mListResource) Routes() chi.Router {
@@ -20,6 +21,7 @@ func (rs mListResource) Routes() chi.Router {
 }
 
 // ShowMasterlist godoc
+//
 //	@Summary		Show list of masterlist
 //	@Description	get masterlist
 //	@Tags			masterlist
@@ -34,7 +36,7 @@ func (rs mListResource) List(w http.ResponseWriter, r *http.Request) {
 	// Get the context from the request
 	ctx := r.Context()
 
-	pageParams, ok := ctx.Value(PaginationParamsKey).(PaginationParams)
+	pageParams, ok := ctx.Value(PaginationParamsKey).(domain.PaginationParams)
 	if !ok {
 		// Handle the case where pagination information is not found in the context
 		// You can choose to use default values or return an error response.
@@ -42,11 +44,15 @@ func (rs mListResource) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Create the PaginatedResponse using the retrieved data and pagination information
-	response := createPaginatedResponse(rs.Masterlist, pageParams)
+	data, err := rs.Repo.GetList(ctx, pageParams)
+	if err != nil {
+		rs.logger.Error("failed to fetch masterlist from database", zap.Error(err))
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	// Marshal and send the response
-	res, err := json.Marshal(response)
+	res, err := json.Marshal(data)
 	if err != nil {
 		http.Error(w, "Error marshaling response", http.StatusInternalServerError)
 		return

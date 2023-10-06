@@ -2,13 +2,13 @@ package generator
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
+	"database/sql"
 	"os"
-	"sort"
-	"strings"
 	"sync"
+	"sync/atomic"
 
+	"github.com/Brix101/psgc-api/internal/domain"
+	"github.com/Brix101/psgc-api/internal/repository"
 	"github.com/gocarina/gocsv"
 	"go.uber.org/zap"
 )
@@ -23,154 +23,81 @@ const (
 	CsvFolder  = "files/csv"
 )
 
-type GeographicArea struct {
-	PsgcCode     string `csv:"10-digit PSGC" json:"psgcCode"`
-	RegionCode   string `json:"regionCode,omitempty"  extensions:"x-nullable,x-omitempty"`
-	ProvinceCode string `json:"provinceCode,omitempty"  extensions:"x-nullable,x-omitempty"`
-	CityCode     string `json:"cityCode,omitempty"  extensions:"x-nullable,x-omitempty"`
-	Name         string `csv:"Name" json:"name"`
-	Code         string `csv:"Correspondence Code" json:"-"`
-	Level        string `csv:"Geographic Level" json:"-"`
-} //@name GeographicArea
-//? comment above is for renaming stuct
-
 type Generator struct {
 	Filename string
+
+	masterlistRepo domain.MasterlistRepository
 }
 
-func NewGenerator(Filename string) *Generator {
+func NewGenerator(Filename string, db *sql.DB) *Generator {
+	masterlistRepo := repository.NewDBMasterlist(db)
 	return &Generator{
 		Filename: Filename,
+
+		masterlistRepo: masterlistRepo,
 	}
 }
 
-func (g *Generator) GenerateJson(ctx context.Context, logger *zap.Logger) error {
+func (g *Generator) GenerateData(ctx context.Context, logger *zap.Logger) error {
 	file, err := os.Open(g.Filename)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
-	psgcData := []*GeographicArea{}
+	psgcData := []*domain.Masterlist{}
 
 	if err := gocsv.Unmarshal(file, &psgcData); err != nil {
 		return err
 	}
+	// Create a channel for errors during record creation
+	errCh := make(chan error, len(psgcData))
 
-	// Create the output folder if it doesn't exist
-	if err := os.MkdirAll(JsonFolder, os.ModePerm); err != nil {
-		return err
-	}
-
+	// Use a WaitGroup to wait for all goroutines to finish
 	var wg sync.WaitGroup
-	doneCh := make(chan struct{})
 
-	// Define a function to create and write a JSON file
-	createJSONFile := func(level string, data []*GeographicArea, doneCh chan<- struct{}) {
-		defer wg.Done()
-		var formatLevel string
+	// Counter to keep track of processed items
+	var processedCount int32
 
-		switch level {
-		case "Reg":
-			formatLevel = Regions
-		case "Prov":
-			for i, item := range data {
-				psgcCode := item.PsgcCode
-				regionCode := psgcCode[:2] + strings.Repeat("0", len(psgcCode)-2)
-
-				data[i].RegionCode = regionCode
-			}
-			formatLevel = Provinces
-		case "City":
-			for i, item := range data {
-				psgcCode := item.PsgcCode
-				regionCode := psgcCode[:2] + strings.Repeat("0", len(psgcCode)-2)
-				provinceCode := psgcCode[:5] + strings.Repeat("0", len(psgcCode)-5)
-
-				data[i].RegionCode = regionCode
-				data[i].ProvinceCode = provinceCode
-			}
-			formatLevel = Cities
-		case "Bgy":
-			for i, item := range data {
-				psgcCode := item.PsgcCode
-				regionCode := psgcCode[:2] + strings.Repeat("0", len(psgcCode)-2)
-				provinceCode := psgcCode[:5] + strings.Repeat("0", len(psgcCode)-5)
-				cityCode := psgcCode[:7] + strings.Repeat("0", len(psgcCode)-7)
-
-				data[i].RegionCode = regionCode
-				data[i].ProvinceCode = provinceCode
-				data[i].CityCode = cityCode
-			}
-			formatLevel = Barangays
-		default:
-			formatLevel = level
-		}
-
-		if formatLevel != level || level == Masterlist {
-			filename := fmt.Sprintf("%s/%s.json", JsonFolder, formatLevel)
-
-			// Remove the existing JSON file if it exists
-			if err := os.Remove(filename); err != nil && !os.IsNotExist(err) {
-				panic(err)
-			}
-
-			// Create a new JSON file for writing
-			createdFile, err := os.Create(filename)
-			if err != nil {
-				panic(err)
-			}
-			defer createdFile.Close()
-
-			// Create a JSON encoder
-			encoder := json.NewEncoder(createdFile)
-
-			// Sort the data by PsgcCode before encoding
-			sort.Slice(data, func(i, j int) bool {
-				return data[i].PsgcCode < data[j].PsgcCode
-			})
-
-			// Encode and write the sorted data to the JSON file
-			if err := encoder.Encode(data); err != nil {
-				panic(err)
-			}
-
-			message := fmt.Sprintf("%d Data for level '%s' written to %s\n", len(data), level, filename)
-			logger.Info(message)
-		}
-		// Notify that this goroutine is done
-		doneCh <- struct{}{}
-	}
-
-	// Group data by level and start creating JSON files concurrently
-
-	groupedData := make(map[string][]*GeographicArea)
-	for _, item := range psgcData {
-		level := item.Level
-
-		if len(level) >= 3 {
-			if level == "Mun" {
-				level = "City"
-			}
-			groupedData[level] = append(groupedData[level], item)
-		}
-		groupedData[Masterlist] = append(groupedData[Masterlist], item)
-	}
-
-	for level, data := range groupedData {
+	for i, data := range psgcData {
 		wg.Add(1)
-		go createJSONFile(level, data, doneCh)
+		go func(i int, data *domain.Masterlist) {
+			defer wg.Done()
+			if _, err := g.masterlistRepo.Create(ctx, data); err != nil {
+				logger.Error(
+					"Create error",
+					zap.Error(*err),
+					zap.Int("Index", i),
+					zap.String("PsgcCode", data.PsgcCode),
+				)
+				errCh <- *err
+			} else {
+
+				// Increment the counter when an item is processed successfully
+				atomic.AddInt32(&processedCount, 1)
+				logger.Info("Record created", zap.Int("Index", i), zap.String("PsgcCode", data.PsgcCode))
+			}
+		}(i, data)
 	}
 
+	// Close the error channel when all goroutines are done
 	go func() {
 		wg.Wait()
-		close(doneCh)
+		close(errCh)
 	}()
 
-	// Wait for all goroutines to complete and receive their notifications
-	for range groupedData {
-		<-doneCh
+	// Collect errors from the error channel
+	var errors []error
+	for err := range errCh {
+		errors = append(errors, err)
 	}
+
+	if len(errors) > 0 {
+		// You can decide how to handle errors here, e.g., return the first error encountered
+		return errors[0]
+	}
+	// Log the total number of items processed
+	logger.Info("Total items processed", zap.Int32("Count", processedCount))
 
 	os.Exit(0)
 	return nil

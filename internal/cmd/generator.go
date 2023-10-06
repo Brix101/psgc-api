@@ -11,7 +11,8 @@ import (
 )
 
 func GeneratorCmd(ctx context.Context) *cobra.Command {
-	var file string
+	year := time.Now().Year()
+	file := fmt.Sprintf("%s/psgc_%d.csv", generator.CsvFolder, year)
 
 	cmd := &cobra.Command{
 		Use:   "generate",
@@ -19,16 +20,17 @@ func GeneratorCmd(ctx context.Context) *cobra.Command {
 		Short: "Generate a new JSON file.",
 		Long:  "Generate a new JSON file from a CSV input file.",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if file == "" {
-				year := time.Now().Year()
-				file = fmt.Sprintf("%s/psgc_%d.csv", generator.CsvFolder, year)
-			}
-
 			logger := util.NewLogger("generator")
 			defer func() { _ = logger.Sync() }()
 
-			jsonGenerator := generator.NewGenerator(file)
-			if err := jsonGenerator.GenerateJson(ctx, logger); err != nil {
+			db, err := util.NewSQLitePool(ctx)
+			if err != nil {
+				return err
+			}
+			defer db.Close()
+
+			jsonGenerator := generator.NewGenerator(file, db)
+			if err := jsonGenerator.GenerateData(ctx, logger); err != nil {
 				return err
 			}
 

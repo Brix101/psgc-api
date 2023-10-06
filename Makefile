@@ -3,9 +3,13 @@ GO_BIN = ~/go/bin
 APP_NAME = psgc
 SRC_DIR = ./cmd/http
 
-.PHONY: dev
+.PHONY: dev-api
 dev:
-	$(GO_BIN)/air
+	$(GO_BIN)/air api
+
+.PHONY: dev-gen
+generate:
+	go run $(SRC_DIR) generate
 
 .PHONY: build
 build:
