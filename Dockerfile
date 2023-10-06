@@ -20,7 +20,7 @@ WORKDIR /app
 ENV ENV=prod
 
 # Copy the binary built in the previous stage
-COPY --from=builder /app/files/json ./files/json
+COPY --from=builder /app/db ./db
 COPY --from=builder /psgc .
 
 # Run
