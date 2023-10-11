@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"time"
 
 	_ "github.com/Brix101/psgc-api/docs"
 	"github.com/Brix101/psgc-api/internal/domain"
@@ -12,13 +13,14 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/go-chi/httprate"
 	"github.com/swaggo/http-swagger/v2"
 	"go.uber.org/zap"
 )
 
 type apiResource struct {
 	logger *zap.Logger
-	Repo domain.MasterlistRepository
+	Repo   domain.MasterlistRepository
 }
 
 type api struct {
@@ -31,12 +33,12 @@ type api struct {
 	mListApi mListResource
 }
 
-func NewAPI(ctx context.Context, logger *zap.Logger, db *sql.DB) *api {
+func NewAPI(_ context.Context, logger *zap.Logger, db *sql.DB) *api {
 	dbMl := repository.NewDBMasterlist(db)
 
 	aRs := apiResource{
 		logger: logger,
-		Repo: dbMl,
+		Repo:   dbMl,
 	}
 
 	return &api{
@@ -74,6 +76,14 @@ func (a *api) Routes() http.Handler {
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	}))
 
+	// Rate limit by IP and URL path (aka endpoint)
+	r.Use(httprate.Limit(
+		500,           // requests
+		1*time.Minute, // per duration
+		httprate.WithKeyFuncs(httprate.KeyByIP, httprate.KeyByEndpoint),
+	))
+
+	fmt.Println(1 * time.Minute)
 	r.Get("/docs/*", httpSwagger.Handler(
 		httpSwagger.URL("doc.json"), // The url pointing to API definition
 	))
