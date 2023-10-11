@@ -8,11 +8,11 @@ RUN go mod download
 COPY . .
 
 # Build
-RUN apk add --no-cache gcc g++ git openssh-client
-RUN GO111MODULE=on CGO_ENABLED=1 GOOS=linux go build -ldflags="-w -s" -o /psgc ./cmd/http
+RUN apk add --no-cache gcc g++ #git openssh-client
+RUN GO111MODULE=on CGO_ENABLED=1 GOOS=linux go build -ldflags="-w -s" -o psgc ./cmd/http
 
 # Clean up unnecessary packages
-RUN apk del gcc g++ git openssh-client
+RUN apk del gcc g++ #git openssh-client
 
 # Stage 2: Create a lightweight final image
 FROM alpine:3.14.2
@@ -25,7 +25,7 @@ ENV ENV=prod
 
 # Copy the binary built in the previous stage
 COPY --from=builder /app/db ./db
-COPY --from=builder /psgc .
+COPY --from=builder /app/psgc /usr/bin
 
 # Run
-CMD ["./psgc", "api"]
+CMD ["psgc", "api"]
