@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	psgctool "github.com/Brix101/psgc-tool"
 	"github.com/Brix101/psgc-tool/internal/generator"
 	"github.com/Brix101/psgc-tool/internal/util"
 	"github.com/spf13/cobra"
@@ -34,7 +33,7 @@ func GeneratorCmd(ctx context.Context) *cobra.Command {
 				file = fmt.Sprintf("%s/psgc_%d.csv", generator.CsvFolder, year)
 			}
 
-			if err := psgctool.NewMigration(db); err != nil {
+			if err := util.NewMigration(db); err != nil {
 				return err
 			}
 

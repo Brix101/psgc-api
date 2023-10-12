@@ -1,17 +1,15 @@
-package psgctool
+package util
 
 import (
 	"database/sql"
-	"embed"
 
+	psgctool "github.com/Brix101/psgc-tool"
 	"github.com/pressly/goose/v3"
 )
 
-//go:embed migrations/*.sql
-var embedMigrations embed.FS
 
 func NewMigration(db *sql.DB) error {
-    goose.SetBaseFS(embedMigrations)
+    goose.SetBaseFS(psgctool.EmbedMigrations)
 
     if err := goose.SetDialect("sqlite3"); err != nil {
         return err

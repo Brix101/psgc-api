@@ -28,7 +28,7 @@ func NewLogger(service string) *zap.Logger {
 
 func NewSQLitePool(ctx context.Context) (*sql.DB, error) {
 	year := time.Now().Year()
-	dbFile := fmt.Sprintf("db/data_%d.db", year)
+	dbFile := fmt.Sprintf("db/psgc_%d.db", year)
 
 	db, err := sql.Open("sqlite3", dbFile)
 	if err != nil {
