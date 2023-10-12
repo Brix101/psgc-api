@@ -14,7 +14,10 @@ const (
 	RegCtx = "RegCtx"
 )
 
-type regResource apiResource
+type regResource struct {
+	logger  *zap.Logger
+	regRepo domain.RegionRepository
+}
 
 // Routes creates a REST router for the regions resource
 func (rs regResource) Routes() chi.Router {
@@ -23,9 +26,9 @@ func (rs regResource) Routes() chi.Router {
 
 	r.With(paginate).Get("/", rs.List) // GET /regions - read a list of regions
 
-	r.Route("/{psgcCode}", func(r chi.Router) {
+	r.Route("/{psgc_code}", func(r chi.Router) {
 		r.Use(rs.RegionCtx) // lets have a regions map, and lets actually load/manipulate
-		r.Get("/", rs.Get)  // GET /regions/{psgcCode} - read a single todo by :id
+		r.Get("/", rs.Get)  // GET /regions/{psgc_code} - read a single todo by :id
 	})
 
 	return r
@@ -34,9 +37,9 @@ func (rs regResource) Routes() chi.Router {
 func (rs regResource) RegionCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		psgcCode := chi.URLParam(r, "psgcCode") // Get the {psgcCode} from the route
+		psgcCode := chi.URLParam(r, "psgc_code") // Get the {psgc_code} from the route
 
-		item, err := rs.Repo.GetRegionById(ctx, psgcCode)
+		item, err := rs.regRepo.GetById(ctx, psgcCode)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusNotFound)
 			return
@@ -49,13 +52,13 @@ func (rs regResource) RegionCtx(next http.Handler) http.Handler {
 
 // ShowRegions godoc
 //
-//	@Summary		Show list of regions
-//	@Description	get regions
-//	@Tags			regions
+//	@Summary		Show list of Regions
+//	@Description	get Regions
+//	@Tags			Regions
 //	@Accept			json
 //	@Produce		json
 //	@Param			query	query		PaginationParams	false	"Pagination and filter parameters"
-//	@Success		200		{object}	PaginatedResponse
+//	@Success		200		{object}	PaginatedRegion
 //	@Failure		400		{object}	string	"Bad Request"
 //	@Failure		500		{object}	string	"Internal Server Error"
 //	@Router			/regions [get]
@@ -71,7 +74,7 @@ func (rs regResource) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := rs.Repo.GetRegionList(ctx, pageParams)
+	data, err := rs.regRepo.GetList(ctx, pageParams)
 	if err != nil {
 		rs.logger.Error("failed to fetch regions from database", zap.Error(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -91,22 +94,22 @@ func (rs regResource) List(w http.ResponseWriter, r *http.Request) {
 
 // ShowRegions godoc
 //
-//	@Summary		Show a region
+//	@Summary		Show a Region
 //	@Description	get string by PsgcCode
-//	@Tags			regions
+//	@Tags			Regions
 //	@Accept			json
 //	@Produce		json
-//	@Param			psgcCode	path		string true	"Region PsgcCode"
-//	@Success		200			{object}	domain.Masterlist
+//	@Param			psgc_code	path		string true	"Region PsgcCode"
+//	@Success		200			{object}	domain.Region
 //	@Failure		400			{object}	string	"Bad Request"
 //	@Failure		400			{object}	string	"Item Not Found"
 //	@Failure		500			{object}	string	"Internal Server Error"
-//	@Router			/regions/{psgcCode} [get]
+//	@Router			/regions/{psgc_code} [get]
 func (rs regResource) Get(w http.ResponseWriter, r *http.Request) {
 	// Get the context from the request
 	ctx := r.Context()
 
-	item, ok := ctx.Value(RegCtx).(domain.Masterlist)
+	item, ok := ctx.Value(RegCtx).(domain.Region)
 	if !ok {
 		// Handle the case where item is not found in the context
 		http.Error(w, "Item not found", http.StatusNotFound)

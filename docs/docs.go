@@ -17,7 +17,7 @@ const docTemplate = `{
     "paths": {
         "/barangays": {
             "get": {
-                "description": "get barangays",
+                "description": "get Barangays",
                 "consumes": [
                     "application/json"
                 ],
@@ -25,27 +25,29 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "barangays"
+                    "Barangays"
                 ],
                 "summary": "Show list of Barangays",
                 "parameters": [
                     {
                         "type": "string",
                         "example": "filter",
-                        "description": "This is filter for all the field in the object GeographicArea",
+                        "description": "This is filter for all the field in the  object",
                         "name": "filter",
                         "in": "query"
                     },
                     {
+                        "minimum": 0,
                         "type": "integer",
                         "example": 1,
                         "name": "page",
                         "in": "query"
                     },
                     {
+                        "maximum": 1000,
                         "type": "integer",
                         "example": 1000,
-                        "name": "perPage",
+                        "name": "per_page",
                         "in": "query"
                     }
                 ],
@@ -53,7 +55,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/PaginatedResponse"
+                            "$ref": "#/definitions/PaginatedBarangay"
                         }
                     },
                     "400": {
@@ -71,7 +73,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/barangays/{psgcCode}": {
+        "/barangays/{psgc_code}": {
             "get": {
                 "description": "get string by PsgcCode",
                 "consumes": [
@@ -83,12 +85,12 @@ const docTemplate = `{
                 "tags": [
                     "barangays"
                 ],
-                "summary": "Show a barangay",
+                "summary": "Show a Barangay",
                 "parameters": [
                     {
                         "type": "string",
                         "description": "Barangay psgcCode",
-                        "name": "psgcCode",
+                        "name": "psgc_code",
                         "in": "path",
                         "required": true
                     }
@@ -97,7 +99,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/Masterlist"
+                            "$ref": "#/definitions/Barangay"
                         }
                     },
                     "400": {
@@ -115,9 +117,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/cities": {
+        "/citi_muni": {
             "get": {
-                "description": "get cities",
+                "description": "get Cities/Municipalities",
                 "consumes": [
                     "application/json"
                 ],
@@ -125,27 +127,29 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "cities"
+                    "Cities/Municipalities"
                 ],
-                "summary": "Show list of cities",
+                "summary": "Show list of Cities/Municipalities",
                 "parameters": [
                     {
                         "type": "string",
                         "example": "filter",
-                        "description": "This is filter for all the field in the object GeographicArea",
+                        "description": "This is filter for all the field in the  object",
                         "name": "filter",
                         "in": "query"
                     },
                     {
+                        "minimum": 0,
                         "type": "integer",
                         "example": 1,
                         "name": "page",
                         "in": "query"
                     },
                     {
+                        "maximum": 1000,
                         "type": "integer",
                         "example": 1000,
-                        "name": "perPage",
+                        "name": "per_page",
                         "in": "query"
                     }
                 ],
@@ -153,7 +157,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/PaginatedResponse"
+                            "$ref": "#/definitions/PaginatedCityMuni"
                         }
                     },
                     "400": {
@@ -171,7 +175,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/cities/{psgcCode}": {
+        "/citi_muni/{psgc_code}": {
             "get": {
                 "description": "get string by PsgcCode",
                 "consumes": [
@@ -181,14 +185,14 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "cities"
+                    "Cities/Municipalities"
                 ],
-                "summary": "Show a city",
+                "summary": "Show a City/Municipality",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "City PsgcCode",
-                        "name": "psgcCode",
+                        "description": "City/Municipality PsgcCode",
+                        "name": "psgc_code",
                         "in": "path",
                         "required": true
                     }
@@ -197,7 +201,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/Masterlist"
+                            "$ref": "#/definitions/CityMuni"
                         }
                     },
                     "400": {
@@ -217,7 +221,7 @@ const docTemplate = `{
         },
         "/masterlist": {
             "get": {
-                "description": "get masterlist",
+                "description": "get Masterlist",
                 "consumes": [
                     "application/json"
                 ],
@@ -225,27 +229,29 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "masterlist"
+                    "Masterlist"
                 ],
-                "summary": "Show list of masterlist",
+                "summary": "Show list of Masterlist",
                 "parameters": [
                     {
                         "type": "string",
                         "example": "filter",
-                        "description": "This is filter for all the field in the object GeographicArea",
+                        "description": "This is filter for all the field in the  object",
                         "name": "filter",
                         "in": "query"
                     },
                     {
+                        "minimum": 0,
                         "type": "integer",
                         "example": 1,
                         "name": "page",
                         "in": "query"
                     },
                     {
+                        "maximum": 1000,
                         "type": "integer",
                         "example": 1000,
-                        "name": "perPage",
+                        "name": "per_page",
                         "in": "query"
                     }
                 ],
@@ -253,7 +259,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/PaginatedResponse"
+                            "$ref": "#/definitions/PaginatedMasterlist"
                         }
                     },
                     "400": {
@@ -273,7 +279,7 @@ const docTemplate = `{
         },
         "/provinces": {
             "get": {
-                "description": "get provinces",
+                "description": "get Provinces",
                 "consumes": [
                     "application/json"
                 ],
@@ -281,27 +287,29 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "provinces"
+                    "Provinces"
                 ],
-                "summary": "Show list of provinces",
+                "summary": "Show list of Provinces",
                 "parameters": [
                     {
                         "type": "string",
                         "example": "filter",
-                        "description": "This is filter for all the field in the object GeographicArea",
+                        "description": "This is filter for all the field in the  object",
                         "name": "filter",
                         "in": "query"
                     },
                     {
+                        "minimum": 0,
                         "type": "integer",
                         "example": 1,
                         "name": "page",
                         "in": "query"
                     },
                     {
+                        "maximum": 1000,
                         "type": "integer",
                         "example": 1000,
-                        "name": "perPage",
+                        "name": "per_page",
                         "in": "query"
                     }
                 ],
@@ -309,7 +317,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/PaginatedResponse"
+                            "$ref": "#/definitions/PaginatedProvince"
                         }
                     },
                     "400": {
@@ -327,7 +335,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/provinces/{psgcCode}": {
+        "/provinces/{psgc_code}": {
             "get": {
                 "description": "get string by PsgcCode",
                 "consumes": [
@@ -337,14 +345,14 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "provinces"
+                    "Provinces"
                 ],
-                "summary": "Show a province",
+                "summary": "Show a Province",
                 "parameters": [
                     {
                         "type": "string",
                         "description": "Province PsgcCode",
-                        "name": "psgcCode",
+                        "name": "psgc_code",
                         "in": "path",
                         "required": true
                     }
@@ -353,7 +361,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/Masterlist"
+                            "$ref": "#/definitions/Province"
                         }
                     },
                     "400": {
@@ -373,7 +381,7 @@ const docTemplate = `{
         },
         "/regions": {
             "get": {
-                "description": "get regions",
+                "description": "get Regions",
                 "consumes": [
                     "application/json"
                 ],
@@ -381,27 +389,29 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "regions"
+                    "Regions"
                 ],
-                "summary": "Show list of regions",
+                "summary": "Show list of Regions",
                 "parameters": [
                     {
                         "type": "string",
                         "example": "filter",
-                        "description": "This is filter for all the field in the object GeographicArea",
+                        "description": "This is filter for all the field in the  object",
                         "name": "filter",
                         "in": "query"
                     },
                     {
+                        "minimum": 0,
                         "type": "integer",
                         "example": 1,
                         "name": "page",
                         "in": "query"
                     },
                     {
+                        "maximum": 1000,
                         "type": "integer",
                         "example": 1000,
-                        "name": "perPage",
+                        "name": "per_page",
                         "in": "query"
                     }
                 ],
@@ -409,7 +419,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/PaginatedResponse"
+                            "$ref": "#/definitions/PaginatedRegion"
                         }
                     },
                     "400": {
@@ -427,7 +437,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/regions/{psgcCode}": {
+        "/regions/{psgc_code}": {
             "get": {
                 "description": "get string by PsgcCode",
                 "consumes": [
@@ -437,14 +447,14 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "regions"
+                    "Regions"
                 ],
-                "summary": "Show a region",
+                "summary": "Show a Region",
                 "parameters": [
                     {
                         "type": "string",
                         "description": "Region PsgcCode",
-                        "name": "psgcCode",
+                        "name": "psgc_code",
                         "in": "path",
                         "required": true
                     }
@@ -453,7 +463,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/Masterlist"
+                            "$ref": "#/definitions/Region"
                         }
                     },
                     "400": {
@@ -473,13 +483,44 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "Barangay": {
+            "type": "object",
+            "properties": {
+                "city_muni_code": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "psgc_code": {
+                    "type": "string"
+                }
+            }
+        },
+        "CityMuni": {
+            "type": "object",
+            "properties": {
+                "level": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "prov_code": {
+                    "type": "string"
+                },
+                "psgc_code": {
+                    "type": "string"
+                }
+            }
+        },
         "Masterlist": {
             "type": "object",
             "properties": {
                 "name": {
                     "type": "string"
                 },
-                "psgcCode": {
+                "psgc_code": {
                     "type": "string"
                 }
             }
@@ -487,7 +528,7 @@ const docTemplate = `{
         "MetaData": {
             "type": "object",
             "properties": {
-                "itemCount": {
+                "item_count": {
                     "type": "integer",
                     "example": 1000
                 },
@@ -495,21 +536,49 @@ const docTemplate = `{
                     "type": "integer",
                     "example": 1
                 },
-                "perPage": {
+                "per_page": {
                     "type": "integer",
                     "example": 1000
                 },
-                "totalItems": {
+                "total_items": {
                     "type": "integer",
                     "example": 10000
                 },
-                "totalPages": {
+                "total_pages": {
                     "type": "integer",
                     "example": 10
                 }
             }
         },
-        "PaginatedResponse": {
+        "PaginatedBarangay": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Barangay"
+                    }
+                },
+                "metadata": {
+                    "$ref": "#/definitions/MetaData"
+                }
+            }
+        },
+        "PaginatedCityMuni": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/CityMuni"
+                    }
+                },
+                "metadata": {
+                    "$ref": "#/definitions/MetaData"
+                }
+            }
+        },
+        "PaginatedMasterlist": {
             "type": "object",
             "properties": {
                 "data": {
@@ -520,6 +589,59 @@ const docTemplate = `{
                 },
                 "metadata": {
                     "$ref": "#/definitions/MetaData"
+                }
+            }
+        },
+        "PaginatedProvince": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Province"
+                    }
+                },
+                "metadata": {
+                    "$ref": "#/definitions/MetaData"
+                }
+            }
+        },
+        "PaginatedRegion": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Region"
+                    }
+                },
+                "metadata": {
+                    "$ref": "#/definitions/MetaData"
+                }
+            }
+        },
+        "Province": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "psgc_code": {
+                    "type": "string"
+                },
+                "regCode": {
+                    "type": "string"
+                }
+            }
+        },
+        "Region": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "psgc_code": {
+                    "type": "string"
                 }
             }
         }

@@ -9,7 +9,10 @@ import (
 	"go.uber.org/zap"
 )
 
-type mListResource apiResource
+type mListResource struct {
+	logger    *zap.Logger
+	mListRepo domain.MasterlistRepository
+}
 
 // Routes creates a REST router for the masterlist resource
 func (rs mListResource) Routes() chi.Router {
@@ -22,13 +25,13 @@ func (rs mListResource) Routes() chi.Router {
 
 // ShowMasterlist godoc
 //
-//	@Summary		Show list of masterlist
-//	@Description	get masterlist
-//	@Tags			masterlist
+//	@Summary		Show list of Masterlist
+//	@Description	get Masterlist
+//	@Tags			Masterlist
 //	@Accept			json
 //	@Produce		json
 //	@Param			query	query		PaginationParams	false	"Pagination and filter parameters"
-//	@Success		200		{object}	PaginatedResponse
+//	@Success		200		{object}	PaginatedMasterlist
 //	@Failure		400		{object}	string	"Bad Request"
 //	@Failure		500		{object}	string	"Internal Server Error"
 //	@Router			/masterlist [get]
@@ -44,7 +47,7 @@ func (rs mListResource) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := rs.Repo.GetList(ctx, pageParams)
+	data, err := rs.mListRepo.GetList(ctx, pageParams)
 	if err != nil {
 		rs.logger.Error("failed to fetch masterlist from database", zap.Error(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)

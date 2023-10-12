@@ -17,7 +17,7 @@ type dbMasterlistRepository struct {
 }
 
 func NewDBMasterlist(conn *sql.DB) domain.MasterlistRepository {
-	tracer := otel.Tracer("db:postgres:masterlist")
+	tracer := otel.Tracer("db:sqlite3:masterlist")
 
 	return &dbMasterlistRepository{conn: conn, tracer: tracer}
 }
@@ -58,12 +58,12 @@ func (p *dbMasterlistRepository) paginatedQuery(
 	ctx context.Context,
 	level string,
 	params domain.PaginationParams,
-) (domain.PaginatedResponse, error) {
+) (domain.PaginatedMasterlist, error) {
 	queryParams := []interface{}{}
 	query := `SELECT * FROM masterlist`
 	countQuery := `SELECT COUNT(*) FROM masterlist`
-	
-	if level != ""{
+
+	if level != "" {
 		query += fmt.Sprintf(" WHERE level = '%s'", level)
 		countQuery += fmt.Sprintf(" WHERE level = '%s'", level)
 	}
@@ -91,7 +91,7 @@ func (p *dbMasterlistRepository) paginatedQuery(
 	// Execute the query with appropriate parameters.
 	lst, err := p.fetch(ctx, query, queryParams...)
 	if err != nil {
-		return domain.PaginatedResponse{}, err
+		return domain.PaginatedMasterlist{}, err
 	}
 
 	totalItems := 0
@@ -112,7 +112,7 @@ func (p *dbMasterlistRepository) paginatedQuery(
 		ItemCount:  len(lst),
 	}
 
-	res := domain.PaginatedResponse{
+	res := domain.PaginatedMasterlist{
 		MetaData: metaData,
 		Data:     lst,
 	}
@@ -123,7 +123,7 @@ func (p *dbMasterlistRepository) paginatedQuery(
 func (p *dbMasterlistRepository) GetList(
 	ctx context.Context,
 	params domain.PaginationParams,
-) (domain.PaginatedResponse, error) {
+) (domain.PaginatedMasterlist, error) {
 	res, err := p.paginatedQuery(ctx, "Bgy", params)
 
 	return res, err
@@ -131,8 +131,8 @@ func (p *dbMasterlistRepository) GetList(
 
 func (p *dbMasterlistRepository) Create(
 	ctx context.Context,
-	lst *domain.Masterlist,
-) (*string, *error) {
+	data *domain.Masterlist,
+) error {
 	query := `
 		INSERT OR REPLACE INTO masterlist (psgc_code, name, code, level)
 		VALUES (?, ?, ?, ?);`
@@ -143,25 +143,73 @@ func (p *dbMasterlistRepository) Create(
 	_, err := p.conn.ExecContext(
 		ctx,
 		query,
-		lst.PsgcCode,
-		lst.Name,
-		lst.Code,
-		lst.Level,
+		data.PsgcCode,
+		data.Name,
+		data.Code,
+		data.Level,
 	)
 	if err != nil {
 		span.SetStatus(codes.Error, "failed inserting masterlist")
 		span.RecordError(err)
-		fmt.Println(lst.PsgcCode)
-		return nil, &err
+		fmt.Println(data.PsgcCode)
+		return err
 	}
 
-	return &lst.PsgcCode, nil
+	return nil
+}
+
+func (p *dbMasterlistRepository) CreateBatch(
+    ctx context.Context,
+    data []*domain.Masterlist,
+) error {
+    query := `
+        INSERT OR REPLACE INTO masterlist (psgc_code, name, code, level)
+        VALUES (?, ?, ?, ?);`
+
+    ctx, span := spanWithQuery(ctx, p.tracer, query)
+    defer span.End()
+
+    // Start a transaction
+    tx, err := p.conn.BeginTx(ctx, nil)
+    if err != nil {
+        span.SetStatus(codes.Error, "failed to start transaction")
+        span.RecordError(err)
+        return err
+    }
+    defer tx.Rollback() // Ensure the transaction is rolled back in case of an error
+
+    // Prepare the insert statement
+    stmt, err := tx.PrepareContext(ctx, query)
+    if err != nil {
+        span.SetStatus(codes.Error, "failed to prepare statement")
+        span.RecordError(err)
+        return err
+    }
+    defer stmt.Close()
+
+    for _, d := range data {
+        _, err := stmt.ExecContext(ctx, d.PsgcCode, d.Name, d.Code, d.Level)
+        if err != nil {
+            span.SetStatus(codes.Error, "failed inserting masterlist")
+            span.RecordError(err)
+            return err
+        }
+    }
+
+    // Commit the transaction
+    if err := tx.Commit(); err != nil {
+        span.SetStatus(codes.Error, "failed to commit transaction")
+        span.RecordError(err)
+        return err
+    }
+
+    return nil
 }
 
 func (p *dbMasterlistRepository) GetBarangayList(
 	ctx context.Context,
 	params domain.PaginationParams,
-) (domain.PaginatedResponse, error) {
+) (domain.PaginatedMasterlist, error) {
 	res, err := p.paginatedQuery(ctx, "Bgy", params)
 
 	return res, err
@@ -187,7 +235,7 @@ func (p *dbMasterlistRepository) GetBarangayById(
 func (p *dbMasterlistRepository) GetCityList(
 	ctx context.Context,
 	params domain.PaginationParams,
-) (domain.PaginatedResponse, error) {
+) (domain.PaginatedMasterlist, error) {
 	res, err := p.paginatedQuery(ctx, "City", params)
 
 	return res, err
@@ -213,7 +261,7 @@ func (p *dbMasterlistRepository) GetCityById(
 func (p *dbMasterlistRepository) GetProvinceList(
 	ctx context.Context,
 	params domain.PaginationParams,
-) (domain.PaginatedResponse, error) {
+) (domain.PaginatedMasterlist, error) {
 	res, err := p.paginatedQuery(ctx, "Prov", params)
 
 	return res, err
@@ -239,7 +287,7 @@ func (p *dbMasterlistRepository) GetProvinceById(
 func (p *dbMasterlistRepository) GetRegionList(
 	ctx context.Context,
 	params domain.PaginationParams,
-) (domain.PaginatedResponse, error) {
+) (domain.PaginatedMasterlist, error) {
 	res, err := p.paginatedQuery(ctx, "Reg", params)
 
 	return res, err

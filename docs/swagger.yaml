@@ -1,31 +1,69 @@
 basePath: /api
 definitions:
+  Barangay:
+    properties:
+      city_muni_code:
+        type: string
+      name:
+        type: string
+      psgc_code:
+        type: string
+    type: object
+  CityMuni:
+    properties:
+      level:
+        type: string
+      name:
+        type: string
+      prov_code:
+        type: string
+      psgc_code:
+        type: string
+    type: object
   Masterlist:
     properties:
       name:
         type: string
-      psgcCode:
+      psgc_code:
         type: string
     type: object
   MetaData:
     properties:
-      itemCount:
+      item_count:
         example: 1000
         type: integer
       page:
         example: 1
         type: integer
-      perPage:
+      per_page:
         example: 1000
         type: integer
-      totalItems:
+      total_items:
         example: 10000
         type: integer
-      totalPages:
+      total_pages:
         example: 10
         type: integer
     type: object
-  PaginatedResponse:
+  PaginatedBarangay:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/Barangay'
+        type: array
+      metadata:
+        $ref: '#/definitions/MetaData'
+    type: object
+  PaginatedCityMuni:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/CityMuni'
+        type: array
+      metadata:
+        $ref: '#/definitions/MetaData'
+    type: object
+  PaginatedMasterlist:
     properties:
       data:
         items:
@@ -33,6 +71,40 @@ definitions:
         type: array
       metadata:
         $ref: '#/definitions/MetaData'
+    type: object
+  PaginatedProvince:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/Province'
+        type: array
+      metadata:
+        $ref: '#/definitions/MetaData'
+    type: object
+  PaginatedRegion:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/Region'
+        type: array
+      metadata:
+        $ref: '#/definitions/MetaData'
+    type: object
+  Province:
+    properties:
+      name:
+        type: string
+      psgc_code:
+        type: string
+      regCode:
+        type: string
+    type: object
+  Region:
+    properties:
+      name:
+        type: string
+      psgc_code:
+        type: string
     type: object
 externalDocs:
   description: Data used in this API is sourced from PSGC main page
@@ -51,20 +123,22 @@ paths:
     get:
       consumes:
       - application/json
-      description: get barangays
+      description: get Barangays
       parameters:
-      - description: This is filter for all the field in the object GeographicArea
+      - description: This is filter for all the field in the  object
         example: filter
         in: query
         name: filter
         type: string
       - example: 1
         in: query
+        minimum: 0
         name: page
         type: integer
       - example: 1000
         in: query
-        name: perPage
+        maximum: 1000
+        name: per_page
         type: integer
       produces:
       - application/json
@@ -72,7 +146,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/PaginatedResponse'
+            $ref: '#/definitions/PaginatedBarangay'
         "400":
           description: Bad Request
           schema:
@@ -83,8 +157,8 @@ paths:
             type: string
       summary: Show list of Barangays
       tags:
-      - barangays
-  /barangays/{psgcCode}:
+      - Barangays
+  /barangays/{psgc_code}:
     get:
       consumes:
       - application/json
@@ -92,7 +166,7 @@ paths:
       parameters:
       - description: Barangay psgcCode
         in: path
-        name: psgcCode
+        name: psgc_code
         required: true
         type: string
       produces:
@@ -101,7 +175,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/Masterlist'
+            $ref: '#/definitions/Barangay'
         "400":
           description: Item Not Found
           schema:
@@ -110,27 +184,29 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      summary: Show a barangay
+      summary: Show a Barangay
       tags:
       - barangays
-  /cities:
+  /citi_muni:
     get:
       consumes:
       - application/json
-      description: get cities
+      description: get Cities/Municipalities
       parameters:
-      - description: This is filter for all the field in the object GeographicArea
+      - description: This is filter for all the field in the  object
         example: filter
         in: query
         name: filter
         type: string
       - example: 1
         in: query
+        minimum: 0
         name: page
         type: integer
       - example: 1000
         in: query
-        name: perPage
+        maximum: 1000
+        name: per_page
         type: integer
       produces:
       - application/json
@@ -138,7 +214,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/PaginatedResponse'
+            $ref: '#/definitions/PaginatedCityMuni'
         "400":
           description: Bad Request
           schema:
@@ -147,18 +223,18 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      summary: Show list of cities
+      summary: Show list of Cities/Municipalities
       tags:
-      - cities
-  /cities/{psgcCode}:
+      - Cities/Municipalities
+  /citi_muni/{psgc_code}:
     get:
       consumes:
       - application/json
       description: get string by PsgcCode
       parameters:
-      - description: City PsgcCode
+      - description: City/Municipality PsgcCode
         in: path
-        name: psgcCode
+        name: psgc_code
         required: true
         type: string
       produces:
@@ -167,7 +243,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/Masterlist'
+            $ref: '#/definitions/CityMuni'
         "400":
           description: Item Not Found
           schema:
@@ -176,27 +252,29 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      summary: Show a city
+      summary: Show a City/Municipality
       tags:
-      - cities
+      - Cities/Municipalities
   /masterlist:
     get:
       consumes:
       - application/json
-      description: get masterlist
+      description: get Masterlist
       parameters:
-      - description: This is filter for all the field in the object GeographicArea
+      - description: This is filter for all the field in the  object
         example: filter
         in: query
         name: filter
         type: string
       - example: 1
         in: query
+        minimum: 0
         name: page
         type: integer
       - example: 1000
         in: query
-        name: perPage
+        maximum: 1000
+        name: per_page
         type: integer
       produces:
       - application/json
@@ -204,7 +282,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/PaginatedResponse'
+            $ref: '#/definitions/PaginatedMasterlist'
         "400":
           description: Bad Request
           schema:
@@ -213,27 +291,29 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      summary: Show list of masterlist
+      summary: Show list of Masterlist
       tags:
-      - masterlist
+      - Masterlist
   /provinces:
     get:
       consumes:
       - application/json
-      description: get provinces
+      description: get Provinces
       parameters:
-      - description: This is filter for all the field in the object GeographicArea
+      - description: This is filter for all the field in the  object
         example: filter
         in: query
         name: filter
         type: string
       - example: 1
         in: query
+        minimum: 0
         name: page
         type: integer
       - example: 1000
         in: query
-        name: perPage
+        maximum: 1000
+        name: per_page
         type: integer
       produces:
       - application/json
@@ -241,7 +321,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/PaginatedResponse'
+            $ref: '#/definitions/PaginatedProvince'
         "400":
           description: Bad Request
           schema:
@@ -250,10 +330,10 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      summary: Show list of provinces
+      summary: Show list of Provinces
       tags:
-      - provinces
-  /provinces/{psgcCode}:
+      - Provinces
+  /provinces/{psgc_code}:
     get:
       consumes:
       - application/json
@@ -261,7 +341,7 @@ paths:
       parameters:
       - description: Province PsgcCode
         in: path
-        name: psgcCode
+        name: psgc_code
         required: true
         type: string
       produces:
@@ -270,7 +350,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/Masterlist'
+            $ref: '#/definitions/Province'
         "400":
           description: Item Not Found
           schema:
@@ -279,27 +359,29 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      summary: Show a province
+      summary: Show a Province
       tags:
-      - provinces
+      - Provinces
   /regions:
     get:
       consumes:
       - application/json
-      description: get regions
+      description: get Regions
       parameters:
-      - description: This is filter for all the field in the object GeographicArea
+      - description: This is filter for all the field in the  object
         example: filter
         in: query
         name: filter
         type: string
       - example: 1
         in: query
+        minimum: 0
         name: page
         type: integer
       - example: 1000
         in: query
-        name: perPage
+        maximum: 1000
+        name: per_page
         type: integer
       produces:
       - application/json
@@ -307,7 +389,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/PaginatedResponse'
+            $ref: '#/definitions/PaginatedRegion'
         "400":
           description: Bad Request
           schema:
@@ -316,10 +398,10 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      summary: Show list of regions
+      summary: Show list of Regions
       tags:
-      - regions
-  /regions/{psgcCode}:
+      - Regions
+  /regions/{psgc_code}:
     get:
       consumes:
       - application/json
@@ -327,7 +409,7 @@ paths:
       parameters:
       - description: Region PsgcCode
         in: path
-        name: psgcCode
+        name: psgc_code
         required: true
         type: string
       produces:
@@ -336,7 +418,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/Masterlist'
+            $ref: '#/definitions/Region'
         "400":
           description: Item Not Found
           schema:
@@ -345,7 +427,7 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      summary: Show a region
+      summary: Show a Region
       tags:
-      - regions
+      - Regions
 swagger: "2.0"

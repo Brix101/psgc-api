@@ -26,15 +26,28 @@ const (
 type Generator struct {
 	Filename string
 
-	masterlistRepo domain.MasterlistRepository
+	mlistRepo    domain.MasterlistRepository
+	regRepo      domain.RegionRepository
+	provRepo     domain.ProvinceRepository
+	cityMuniRepo domain.CityMuniRepository
+	bgyRepo     domain.BarangayRepository
 }
 
 func NewGenerator(Filename string, db *sql.DB) *Generator {
-	masterlistRepo := repository.NewDBMasterlist(db)
+	mlistRepo := repository.NewDBMasterlist(db)
+	regRepo := repository.NewDBRegion(db)
+	provRepo := repository.NewDBProvince(db)
+	cityMuniRepo := repository.NewDBCityMuni(db)
+	brgyRepo := repository.NewDBBarangay(db)
+
 	return &Generator{
 		Filename: Filename,
 
-		masterlistRepo: masterlistRepo,
+		mlistRepo:    mlistRepo,
+		regRepo:      regRepo,
+		provRepo:     provRepo,
+		cityMuniRepo: cityMuniRepo,
+		bgyRepo:     brgyRepo,
 	}
 }
 
@@ -63,19 +76,33 @@ func (g *Generator) GenerateData(ctx context.Context, logger *zap.Logger) error 
 		wg.Add(1)
 		go func(i int, data *domain.Masterlist) {
 			defer wg.Done()
-			if _, err := g.masterlistRepo.Create(ctx, data); err != nil {
+			err := g.mlistRepo.Create(ctx, data)
+
+			switch data.Level {
+			case "Reg":
+				err = g.regRepo.Create(ctx, data)
+			case "Prov":
+				err = g.provRepo.Create(ctx, data)
+			case "City", "Mun":
+				err = g.cityMuniRepo.Create(ctx, data)
+			case "Bgy":
+				err = g.bgyRepo.Create(ctx, data)
+			default:
+			}
+
+			if err != nil {
 				logger.Error(
 					"Create error",
-					zap.Error(*err),
+					zap.Error(err),
+					zap.String("Level", data.Level),
 					zap.Int("Index", i),
-					zap.String("PsgcCode", data.PsgcCode),
 				)
-				errCh <- *err
+				errCh <- err
 			} else {
 
 				// Increment the counter when an item is processed successfully
 				atomic.AddInt32(&processedCount, 1)
-				logger.Info("Record created", zap.Int("Index", i), zap.String("PsgcCode", data.PsgcCode))
+				logger.Info("Record created", zap.String("Level", data.Level), zap.Int("Index", i))
 			}
 		}(i, data)
 	}

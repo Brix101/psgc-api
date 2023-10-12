@@ -8,47 +8,55 @@ import (
 	"time"
 
 	_ "github.com/Brix101/psgc-tool/docs"
-	"github.com/Brix101/psgc-tool/internal/domain"
 	"github.com/Brix101/psgc-tool/internal/repository"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"github.com/go-chi/httprate"
-	"github.com/swaggo/http-swagger/v2"
+	httpSwagger "github.com/swaggo/http-swagger/v2"
 	"go.uber.org/zap"
 )
-
-type apiResource struct {
-	logger *zap.Logger
-	Repo   domain.MasterlistRepository
-}
 
 type api struct {
 	logger *zap.Logger
 
-	bgryApi  brgyResource
-	cityApi  cityResource
+	bgyApi  bryResource
+	cityApi  citiMuniResource
 	provApi  provResource
 	regApi   regResource
 	mListApi mListResource
 }
 
 func NewAPI(_ context.Context, logger *zap.Logger, db *sql.DB) *api {
-	dbMl := repository.NewDBMasterlist(db)
-
-	aRs := apiResource{
-		logger: logger,
-		Repo:   dbMl,
-	}
+	mListRepo := repository.NewDBMasterlist(db)
+	regRepo := repository.NewDBRegion(db)
+	provRepo := repository.NewDBProvince(db)
+	brgyRepo := repository.NewDBBarangay(db)
+	cityMuniRepo := repository.NewDBCityMuni(db)
 
 	return &api{
 		logger: logger,
 
-		bgryApi:  brgyResource(aRs),
-		cityApi:  cityResource(aRs),
-		provApi:  provResource(aRs),
-		regApi:   regResource(aRs),
-		mListApi: mListResource(aRs),
+		bgyApi: bryResource{
+			logger:   logger,
+			bgyRepo: brgyRepo,
+		},
+		cityApi: citiMuniResource{
+			logger:       logger,
+			cityMuniRepo: cityMuniRepo,
+		},
+		provApi: provResource{
+			logger:   logger,
+			provRepo: provRepo,
+		},
+		regApi: regResource{
+			logger:  logger,
+			regRepo: regRepo,
+		},
+		mListApi: mListResource{
+			logger:    logger,
+			mListRepo: mListRepo,
+		},
 	}
 }
 
@@ -83,14 +91,13 @@ func (a *api) Routes() http.Handler {
 		httprate.WithKeyFuncs(httprate.KeyByIP, httprate.KeyByEndpoint),
 	))
 
-	fmt.Println(1 * time.Minute)
 	r.Get("/docs/*", httpSwagger.Handler(
 		httpSwagger.URL("doc.json"), // The url pointing to API definition
 	))
 
 	r.Route("/api", func(r chi.Router) {
-		r.Mount("/barangays", a.bgryApi.Routes())
-		r.Mount("/cities", a.cityApi.Routes())
+		r.Mount("/barangays", a.bgyApi.Routes())
+		r.Mount("/citi_muni", a.cityApi.Routes())
 		r.Mount("/provinces", a.provApi.Routes())
 		r.Mount("/regions", a.regApi.Routes())
 		r.Mount("/masterlist", a.mListApi.Routes())

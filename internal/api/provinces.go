@@ -14,7 +14,10 @@ const (
 	ProvCtx = "ProvCtx"
 )
 
-type provResource apiResource
+type provResource struct {
+	logger   *zap.Logger
+	provRepo domain.ProvinceRepository
+}
 
 // Routes creates a REST router for the provinces resource
 func (rs provResource) Routes() chi.Router {
@@ -23,9 +26,9 @@ func (rs provResource) Routes() chi.Router {
 
 	r.With(paginate).Get("/", rs.List) // GET /provinces - read a list of provinces
 
-	r.Route("/{psgcCode}", func(r chi.Router) {
+	r.Route("/{psgc_code}", func(r chi.Router) {
 		r.Use(rs.ProvinceCtx) // lets have a provinces map, and lets actually load/manipulate
-		r.Get("/", rs.Get)    // GET /provinces/{psgcCode} - read a single todo by :id
+		r.Get("/", rs.Get)    // GET /provinces/{psgc_code} - read a single todo by :id
 	})
 
 	return r
@@ -34,9 +37,9 @@ func (rs provResource) Routes() chi.Router {
 func (rs provResource) ProvinceCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		psgcCode := chi.URLParam(r, "psgcCode") // Get the {psgcCode} from the route
+		psgcCode := chi.URLParam(r, "psgc_code") // Get the {psgc_code} from the route
 
-		item, err := rs.Repo.GetRegionById(ctx, psgcCode)
+		item, err := rs.provRepo.GetById(ctx, psgcCode)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusNotFound)
 			return
@@ -49,13 +52,13 @@ func (rs provResource) ProvinceCtx(next http.Handler) http.Handler {
 
 // ShowProvinces godoc
 //
-//	@Summary		Show list of provinces
-//	@Description	get provinces
-//	@Tags			provinces
+//	@Summary		Show list of Provinces
+//	@Description	get Provinces
+//	@Tags			Provinces
 //	@Accept			json
 //	@Produce		json
 //	@Param			query	query		PaginationParams	false	"Pagination and filter parameters"
-//	@Success		200		{object}	PaginatedResponse
+//	@Success		200		{object}	PaginatedProvince
 //	@Failure		400		{object}	string	"Bad Request"
 //	@Failure		500		{object}	string	"Internal Server Error"
 //	@Router			/provinces [get]
@@ -71,7 +74,7 @@ func (rs provResource) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := rs.Repo.GetProvinceList(ctx, pageParams)
+	data, err := rs.provRepo.GetList(ctx, pageParams)
 	if err != nil {
 		rs.logger.Error("failed to fetch provinces from database", zap.Error(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -91,22 +94,22 @@ func (rs provResource) List(w http.ResponseWriter, r *http.Request) {
 
 // ShowProvinces godoc
 //
-//	@Summary		Show a province
+//	@Summary		Show a Province
 //	@Description	get string by PsgcCode
-//	@Tags			provinces
+//	@Tags			Provinces
 //	@Accept			json
 //	@Produce		json
-//	@Param			psgcCode	path		string true	"Province PsgcCode"
-//	@Success		200			{object}	domain.Masterlist
+//	@Param			psgc_code	path		string true	"Province PsgcCode"
+//	@Success		200			{object}	domain.Province
 //	@Failure		400			{object}	string	"Bad Request"
 //	@Failure		400			{object}	string	"Item Not Found"
 //	@Failure		500			{object}	string	"Internal Server Error"
-//	@Router			/provinces/{psgcCode} [get]
+//	@Router			/provinces/{psgc_code} [get]
 func (rs provResource) Get(w http.ResponseWriter, r *http.Request) {
 	// Get the context from the request
 	ctx := r.Context()
 
-	item, ok := ctx.Value(ProvCtx).(domain.Masterlist)
+	item, ok := ctx.Value(ProvCtx).(domain.Province)
 	if !ok {
 		// Handle the case where item is not found in the context
 		http.Error(w, "Item not found", http.StatusNotFound)

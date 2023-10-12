@@ -3,9 +3,7 @@
 CREATE TABLE province (
 	psgc_code TEXT PRIMARY KEY,
 	reg_code TEXT,
-	name TEXT,
-	code TEXT,
-	level TEXT
+	name TEXT
 );
 -- +goose StatementEnd
 
