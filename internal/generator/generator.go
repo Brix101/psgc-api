@@ -7,8 +7,8 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/Brix101/psgc-api/internal/domain"
-	"github.com/Brix101/psgc-api/internal/repository"
+	"github.com/Brix101/psgc-tool/internal/domain"
+	"github.com/Brix101/psgc-tool/internal/repository"
 	"github.com/gocarina/gocsv"
 	"go.uber.org/zap"
 )

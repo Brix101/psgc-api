@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/Brix101/psgc-api/internal/cmd"
+	"github.com/Brix101/psgc-tool/internal/cmd"
 )
 
 //	@title						Philippine Standard Geographic Code (PSGC) API

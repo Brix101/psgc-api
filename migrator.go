@@ -1,4 +1,4 @@
-package psgcapi
+package psgctool
 
 import (
 	"database/sql"

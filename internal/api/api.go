@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"time"
 
-	_ "github.com/Brix101/psgc-api/docs"
-	"github.com/Brix101/psgc-api/internal/domain"
-	"github.com/Brix101/psgc-api/internal/repository"
+	_ "github.com/Brix101/psgc-tool/docs"
+	"github.com/Brix101/psgc-tool/internal/domain"
+	"github.com/Brix101/psgc-tool/internal/repository"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"

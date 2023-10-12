@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Brix101/psgc-api/internal/domain"
+	"github.com/Brix101/psgc-tool/internal/domain"
 	"github.com/go-playground/validator/v10"
 )
 

@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/Brix101/psgc-api/internal/api"
-	"github.com/Brix101/psgc-api/internal/util"
+	"github.com/Brix101/psgc-tool/internal/api"
+	"github.com/Brix101/psgc-tool/internal/util"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 )

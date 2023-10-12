@@ -1,4 +1,4 @@
-module github.com/Brix101/psgc-api
+module github.com/Brix101/psgc-tool
 
 go 1.21.1
 

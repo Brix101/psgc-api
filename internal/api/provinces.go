@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/Brix101/psgc-api/internal/domain"
+	"github.com/Brix101/psgc-tool/internal/domain"
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
 )
