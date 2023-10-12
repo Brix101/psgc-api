@@ -18,14 +18,6 @@ type dbMasterlistRepository struct {
 
 func NewDBMasterlist(conn *sql.DB) domain.MasterlistRepository {
 	tracer := otel.Tracer("db:postgres:masterlist")
-	createQuery := `
-	CREATE TABLE masterlist (
-		psgc_code TEXT PRIMARY KEY,
-		name TEXT,
-		code TEXT,
-		level TEXT
-	);`
-	conn.Exec(createQuery)
 
 	return &dbMasterlistRepository{conn: conn, tracer: tracer}
 }

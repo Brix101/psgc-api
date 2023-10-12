@@ -5,14 +5,15 @@ import (
 	"fmt"
 	"time"
 
+	psgc "github.com/Brix101/psgc-api"
 	"github.com/Brix101/psgc-api/internal/generator"
 	"github.com/Brix101/psgc-api/internal/util"
 	"github.com/spf13/cobra"
 )
 
 func GeneratorCmd(ctx context.Context) *cobra.Command {
+	var file string;
 	year := time.Now().Year()
-	file := fmt.Sprintf("%s/psgc_%d.csv", generator.CsvFolder, year)
 
 	cmd := &cobra.Command{
 		Use:   "generate",
@@ -28,6 +29,14 @@ func GeneratorCmd(ctx context.Context) *cobra.Command {
 				return err
 			}
 			defer db.Close()
+
+			if file ==""{
+				file = fmt.Sprintf("%s/psgc_%d.csv", generator.CsvFolder, year)
+			}
+
+			if err:= psgc.NewMigration(db); err!=nil{
+				return err
+			}
 
 			jsonGenerator := generator.NewGenerator(file, db)
 			if err := jsonGenerator.GenerateData(ctx, logger); err != nil {
