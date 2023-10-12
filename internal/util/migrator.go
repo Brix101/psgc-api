@@ -7,22 +7,21 @@ import (
 	"github.com/pressly/goose/v3"
 )
 
-
 func NewMigration(db *sql.DB) error {
-    goose.SetBaseFS(psgctool.EmbedMigrations)
+	goose.SetBaseFS(psgctool.EmbedMigrations)
+	goose.WithNoVersioning()
 
-    if err := goose.SetDialect("sqlite3"); err != nil {
-        return err
-    }
+	if err := goose.Reset(db, "migrations"); err != nil {
+		return err
+	}
 
-    if err := goose.Reset(db, "migrations"); err != nil {
-        return err
-    }
+	if err := goose.Up(db, "migrations"); err != nil {
+		return err
+	}
 
-    if err := goose.Up(db, "migrations"); err != nil {
-        return err
-    }
-
+	if err := goose.Status(db, "migrations"); err != nil {
+		return err
+	}
 
 	return nil
 }

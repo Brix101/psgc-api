@@ -4,9 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"io/fs"
 	"os"
-	"time"
 
+	psgctool "github.com/Brix101/psgc-tool"
 	_ "github.com/mattn/go-sqlite3"
 	"go.uber.org/zap"
 )
@@ -27,8 +28,18 @@ func NewLogger(service string) *zap.Logger {
 }
 
 func NewSQLitePool(ctx context.Context) (*sql.DB, error) {
-	year := time.Now().Year()
-	dbFile := fmt.Sprintf("db/psgc_%d.db", year)
+
+	entries, err := fs.ReadDir(psgctool.EmbedDB, "db")
+	if err != nil {
+		return nil, err
+	}
+
+	if len(entries) == 0 {
+		return nil, fmt.Errorf("no .db files found in embedded data")
+	}
+
+	latestEntry := entries[len(entries)-1]
+	dbFile := "db/" + latestEntry.Name()
 
 	db, err := sql.Open("sqlite3", dbFile)
 	if err != nil {

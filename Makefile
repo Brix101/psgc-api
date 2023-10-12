@@ -2,8 +2,8 @@
 GO_BIN = ~/go/bin
 APP_NAME = psgc
 SRC_DIR = ./cmd/http
-YEAR := $(shell date +'%Y')
-DATABASE = ../db/psgc_$(YEAR).db  # Define your database file here
+DATE := $(shell date +'%Y-%m-%d')
+DATABASE = ../db/$(DATE)-data.db  # Define your database file here
 GOOSE = goose  # Define the Goose binary (make sure it's in your PATH)
 MIGRATIONS_DIR = migrations  # Define the directory where your migrations are located
 
