@@ -74,7 +74,7 @@ func (rs regResource) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := rs.regRepo.GetList(ctx, pageParams)
+	data, err := rs.regRepo.GetAll(ctx, pageParams)
 	if err != nil {
 		rs.logger.Error("failed to fetch regions from database", zap.Error(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)

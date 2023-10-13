@@ -18,7 +18,7 @@ type PaginatedMasterlist struct {
 
 // MasterlistRepository represents the masterlist's repository contract
 type MasterlistRepository interface {
-	GetList(ctx context.Context, params PaginationParams) (PaginatedMasterlist, error)
+	GetAll(ctx context.Context, params PaginationParams) (PaginatedMasterlist, error)
 	Create(ctx context.Context, data *Masterlist) error
 	CreateBatch(ctx context.Context, datas []*Masterlist) error
 	GetBarangayList(ctx context.Context, params PaginationParams) (PaginatedMasterlist, error)

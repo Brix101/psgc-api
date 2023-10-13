@@ -120,7 +120,7 @@ func (p *dbMasterlistRepository) paginatedQuery(
 	return res, nil
 }
 
-func (p *dbMasterlistRepository) GetList(
+func (p *dbMasterlistRepository) GetAll(
 	ctx context.Context,
 	params domain.PaginationParams,
 ) (domain.PaginatedMasterlist, error) {
@@ -151,7 +151,6 @@ func (p *dbMasterlistRepository) Create(
 	if err != nil {
 		span.SetStatus(codes.Error, "failed inserting masterlist")
 		span.RecordError(err)
-		fmt.Println(data.PsgcCode)
 		return err
 	}
 

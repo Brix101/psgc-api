@@ -74,7 +74,7 @@ func (rs bryResource) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := rs.bgyRepo.GetList(ctx, pageParams)
+	data, err := rs.bgyRepo.GetAll(ctx, pageParams)
 	if err != nil {
 		rs.logger.Error("failed to fetch barangays from database", zap.Error(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)

@@ -74,7 +74,7 @@ func (rs provResource) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := rs.provRepo.GetList(ctx, pageParams)
+	data, err := rs.provRepo.GetAll(ctx, pageParams)
 	if err != nil {
 		rs.logger.Error("failed to fetch provinces from database", zap.Error(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)

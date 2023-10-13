@@ -17,7 +17,7 @@ type PaginatedProvince struct {
 
 // ProvinceRepository represents the province's repository contract
 type ProvinceRepository interface {
-	GetList(ctx context.Context, params PaginationParams) (PaginatedProvince, error)
+	GetAll(ctx context.Context, params PaginationParams) (PaginatedProvince, error)
 	Create(ctx context.Context, reg *Masterlist) error
 	GetById(ctx context.Context, psgcCode string) (Province, error)
 }

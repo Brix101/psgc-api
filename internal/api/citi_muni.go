@@ -74,7 +74,7 @@ func (rs citiMuniResource) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := rs.cityMuniRepo.GetList(ctx, pageParams)
+	data, err := rs.cityMuniRepo.GetAll(ctx, pageParams)
 	if err != nil {
 		rs.logger.Error("failed to fetch cities from database", zap.Error(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)

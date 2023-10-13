@@ -47,7 +47,7 @@ func (rs mListResource) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := rs.mListRepo.GetList(ctx, pageParams)
+	data, err := rs.mListRepo.GetAll(ctx, pageParams)
 	if err != nil {
 		rs.logger.Error("failed to fetch masterlist from database", zap.Error(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)

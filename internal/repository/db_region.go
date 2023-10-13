@@ -110,7 +110,7 @@ func (p *dbRegionRepository) paginatedQuery(
 	return res, nil
 }
 
-func (p *dbRegionRepository) GetList(
+func (p *dbRegionRepository) GetAll(
 	ctx context.Context,
 	params domain.PaginationParams,
 ) (domain.PaginatedRegion, error) {

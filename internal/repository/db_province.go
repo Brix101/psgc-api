@@ -112,7 +112,7 @@ func (p *dbProvinceRepository) paginatedQuery(
 	return res, nil
 }
 
-func (p *dbProvinceRepository) GetList(
+func (p *dbProvinceRepository) GetAll(
 	ctx context.Context,
 	params domain.PaginationParams,
 ) (domain.PaginatedProvince, error) {

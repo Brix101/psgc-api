@@ -113,7 +113,7 @@ func (p *dbCityMuniRepository) paginatedQuery(
 	return res, nil
 }
 
-func (p *dbCityMuniRepository) GetList(
+func (p *dbCityMuniRepository) GetAll(
 	ctx context.Context,
 	params domain.PaginationParams,
 ) (domain.PaginatedCityMuni, error) {
