@@ -10,14 +10,13 @@ import (
 	"go.uber.org/zap"
 )
 
-const (
-	CitiMuniCtx = "CityCtx"
+type (
+	CitiMuniCtx      struct{}
+	citiMuniResource struct {
+		logger       *zap.Logger
+		cityMuniRepo domain.CityMuniRepository
+	}
 )
-
-type citiMuniResource struct {
-	logger       *zap.Logger
-	cityMuniRepo domain.CityMuniRepository
-}
 
 // Routes creates a REST router for the cities resource
 func (rs citiMuniResource) Routes() chi.Router {
@@ -28,7 +27,7 @@ func (rs citiMuniResource) Routes() chi.Router {
 
 	r.Route("/{psgc_code}", func(r chi.Router) {
 		r.Use(rs.CitiMuniCtx) // lets have a cities map, and lets actually load/manipulate
-		r.Get("/", rs.Get)  // GET /citi_muni/{psgc_code} - read a single todo by :id
+		r.Get("/", rs.Get)    // GET /citi_muni/{psgc_code} - read a single todo by :id
 	})
 
 	return r
@@ -45,7 +44,7 @@ func (rs citiMuniResource) CitiMuniCtx(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx = context.WithValue(ctx, CitiMuniCtx, item)
+		ctx = context.WithValue(ctx, CitiMuniCtx{}, item)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
@@ -63,13 +62,10 @@ func (rs citiMuniResource) CitiMuniCtx(next http.Handler) http.Handler {
 //	@Failure		500		{object}	string	"Internal Server Error"
 //	@Router			/citi_muni [get]
 func (rs citiMuniResource) List(w http.ResponseWriter, r *http.Request) {
-	// Get the context from the request
 	ctx := r.Context()
 
-	pageParams, ok := ctx.Value(PaginationParamsKey).(domain.PaginationParams)
+	pageParams, ok := ctx.Value(PaginationParamsKey{}).(domain.PaginationParams)
 	if !ok {
-		// Handle the case where pagination information is not found in the context
-		// You can choose to use default values or return an error response.
 		http.Error(w, "Pagination information not found", http.StatusBadRequest)
 		return
 	}
@@ -81,7 +77,6 @@ func (rs citiMuniResource) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Marshal and send the response
 	res, err := json.Marshal(data)
 	if err != nil {
 		http.Error(w, "Error marshaling response", http.StatusInternalServerError)
@@ -102,21 +97,18 @@ func (rs citiMuniResource) List(w http.ResponseWriter, r *http.Request) {
 //	@Param			psgc_code	path		string true	"City/Municipality PsgcCode"
 //	@Success		200			{object}	domain.CityMuni
 //	@Failure		400			{object}	string	"Bad Request"
-//	@Failure		400			{object}	string	"Item Not Found"
+//	@Failure		404			{object}	string	"Item Not Found"
 //	@Failure		500			{object}	string	"Internal Server Error"
 //	@Router			/citi_muni/{psgc_code} [get]
 func (rs citiMuniResource) Get(w http.ResponseWriter, r *http.Request) {
-	// Get the context from the request
 	ctx := r.Context()
 
-	item, ok := ctx.Value(CitiMuniCtx).(domain.CityMuni)
+	item, ok := ctx.Value(CitiMuniCtx{}).(domain.CityMuni)
 	if !ok {
-		// Handle the case where item is not found in the context
-		http.Error(w, "Item not found", http.StatusNotFound)
+		http.Error(w, domain.ErrNotFound.Error(), http.StatusNotFound)
 		return
 	}
 
-	// Marshal and send the response
 	res, err := json.Marshal(item)
 	if err != nil {
 		http.Error(w, "Error marshaling response", http.StatusInternalServerError)

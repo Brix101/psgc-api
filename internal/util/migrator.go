@@ -9,7 +9,6 @@ import (
 
 func NewMigration(db *sql.DB) error {
 	goose.SetBaseFS(psgctool.EmbedMigrations)
-	goose.WithNoVersioning()
 
 	if err := goose.Reset(db, "migrations"); err != nil {
 		return err

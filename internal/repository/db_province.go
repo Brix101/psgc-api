@@ -87,8 +87,9 @@ func (p *dbProvinceRepository) paginatedQuery(
 	}
 
 	totalItems := 0
-	p.conn.QueryRowContext(ctx, countQuery).
-		Scan(&totalItems)
+	if err := p.conn.QueryRowContext(ctx, countQuery).Scan(&totalItems); err != nil {
+		return domain.PaginatedProvince{}, err
+	}
 
 	totalPages := (totalItems + params.PerPage - 1) / params.PerPage
 
@@ -120,7 +121,6 @@ func (p *dbProvinceRepository) GetAll(
 
 	return res, err
 }
-
 
 func (p *dbProvinceRepository) GetById(
 	ctx context.Context,
@@ -168,4 +168,3 @@ func (p *dbProvinceRepository) Create(
 
 	return nil
 }
-

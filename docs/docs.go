@@ -103,6 +103,12 @@ const docTemplate = `{
                         }
                     },
                     "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
                         "description": "Item Not Found",
                         "schema": {
                             "type": "string"
@@ -205,6 +211,12 @@ const docTemplate = `{
                         }
                     },
                     "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
                         "description": "Item Not Found",
                         "schema": {
                             "type": "string"
@@ -277,7 +289,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/city/{psgc_code}": {
+        "/cities/{psgc_code}": {
             "get": {
                 "description": "get string by PsgcCode",
                 "consumes": [
@@ -307,6 +319,12 @@ const docTemplate = `{
                         }
                     },
                     "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
                         "description": "Item Not Found",
                         "schema": {
                             "type": "string"
@@ -379,7 +397,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/municipality/{psgc_code}": {
+        "/municipalities/{psgc_code}": {
             "get": {
                 "description": "get string by PsgcCode",
                 "consumes": [
@@ -511,6 +529,12 @@ const docTemplate = `{
                         }
                     },
                     "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
                         "description": "Item Not Found",
                         "schema": {
                             "type": "string"
@@ -613,6 +637,12 @@ const docTemplate = `{
                         }
                     },
                     "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
                         "description": "Item Not Found",
                         "schema": {
                             "type": "string"

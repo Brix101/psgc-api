@@ -20,6 +20,5 @@ type BarangayRepository interface {
 	GetAll(ctx context.Context, params PaginationParams) (PaginatedBarangay, error)
 	GetById(ctx context.Context, psgcCode string) (Barangay, error)
 
-	
 	Create(ctx context.Context, reg *Masterlist) error
 }

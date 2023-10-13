@@ -161,6 +161,10 @@ paths:
           schema:
             $ref: '#/definitions/Barangay'
         "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
           description: Item Not Found
           schema:
             type: string
@@ -229,6 +233,10 @@ paths:
           schema:
             $ref: '#/definitions/CityMuni'
         "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
           description: Item Not Found
           schema:
             type: string
@@ -278,7 +286,7 @@ paths:
       summary: Show list of Cities
       tags:
       - Cities
-  /city/{psgc_code}:
+  /cities/{psgc_code}:
     get:
       consumes:
       - application/json
@@ -297,6 +305,10 @@ paths:
           schema:
             $ref: '#/definitions/CityMuni'
         "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
           description: Item Not Found
           schema:
             type: string
@@ -346,7 +358,7 @@ paths:
       summary: Show list of Municipalities
       tags:
       - Municipalities
-  /municipality/{psgc_code}:
+  /municipalities/{psgc_code}:
     get:
       consumes:
       - application/json
@@ -433,6 +445,10 @@ paths:
           schema:
             $ref: '#/definitions/Province'
         "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
           description: Item Not Found
           schema:
             type: string
@@ -501,6 +517,10 @@ paths:
           schema:
             $ref: '#/definitions/Region'
         "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
           description: Item Not Found
           schema:
             type: string

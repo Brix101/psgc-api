@@ -28,7 +28,6 @@ func NewLogger(service string) *zap.Logger {
 }
 
 func NewSQLitePool(ctx context.Context) (*sql.DB, error) {
-
 	entries, err := fs.ReadDir(psgctool.EmbedDB, "db")
 	if err != nil {
 		return nil, err

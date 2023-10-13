@@ -25,6 +25,5 @@ type CityMuniRepository interface {
 	GetAllMunicipality(ctx context.Context, params PaginationParams) (PaginatedCityMuni, error)
 	GetMunicipalityById(ctx context.Context, psgcCode string) (CityMuni, error)
 
-	
 	Create(ctx context.Context, reg *Masterlist) error
 }

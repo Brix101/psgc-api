@@ -16,6 +16,10 @@ dev-api:
 dev-gen:
 	go run $(SRC_DIR) generate
 
+.PHONY: lint
+lint:
+	@golangci-lint run
+
 .PHONY: build
 build:
 	go build -o $(APP_NAME) $(SRC_DIR)

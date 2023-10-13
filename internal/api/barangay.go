@@ -10,14 +10,13 @@ import (
 	"go.uber.org/zap"
 )
 
-const (
-	BrgyCtx = "BrgyCtx"
+type (
+	BrgyCtx     struct{}
+	bryResource struct {
+		logger  *zap.Logger
+		bgyRepo domain.BarangayRepository
+	}
 )
-
-type bryResource struct {
-	logger   *zap.Logger
-	bgyRepo domain.BarangayRepository
-}
 
 // Routes creates a REST router for the barangays resource
 func (rs bryResource) Routes() chi.Router {
@@ -45,7 +44,7 @@ func (rs bryResource) BarangayCtx(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx = context.WithValue(ctx, BrgyCtx, item)
+		ctx = context.WithValue(ctx, BrgyCtx{}, item)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
@@ -63,13 +62,10 @@ func (rs bryResource) BarangayCtx(next http.Handler) http.Handler {
 //	@Failure		500		{object}	string	"Internal Server Error"
 //	@Router			/barangays [get]
 func (rs bryResource) List(w http.ResponseWriter, r *http.Request) {
-	// Get the context from the request
 	ctx := r.Context()
 
-	pageParams, ok := ctx.Value(PaginationParamsKey).(domain.PaginationParams)
+	pageParams, ok := ctx.Value(PaginationParamsKey{}).(domain.PaginationParams)
 	if !ok {
-		// Handle the case where pagination information is not found in the context
-		// You can choose to use default values or return an error response.
 		http.Error(w, "Pagination information not found", http.StatusBadRequest)
 		return
 	}
@@ -81,7 +77,6 @@ func (rs bryResource) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Marshal and send the response
 	res, err := json.Marshal(data)
 	if err != nil {
 		http.Error(w, "Error marshaling response", http.StatusInternalServerError)
@@ -102,21 +97,19 @@ func (rs bryResource) List(w http.ResponseWriter, r *http.Request) {
 //	@Param			psgc_code	path		string true	"Barangay psgcCode"
 //	@Success		200			{object}	domain.Barangay
 //	@Failure		400			{object}	string	"Bad Request"
-//	@Failure		400			{object}	string	"Item Not Found"
+//	@Failure		404			{object}	string	"Item Not Found"
 //	@Failure		500			{object}	string	"Internal Server Error"
 //	@Router			/barangays/{psgc_code} [get]
 func (rs bryResource) Get(w http.ResponseWriter, r *http.Request) {
-	// Get the context from the request
 	ctx := r.Context()
 
-	item, ok := ctx.Value(BrgyCtx).(domain.Barangay)
+	item, ok := ctx.Value(BrgyCtx{}).(domain.Barangay)
 	if !ok {
-		// Handle the case where item is not found in the context
-		http.Error(w, "Item not found", http.StatusNotFound)
+
+		http.Error(w, domain.ErrNotFound.Error(), http.StatusNotFound)
 		return
 	}
 
-	// Marshal and send the response
 	res, err := json.Marshal(item)
 	if err != nil {
 		http.Error(w, "Error marshaling response", http.StatusInternalServerError)

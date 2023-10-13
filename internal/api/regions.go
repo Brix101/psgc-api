@@ -10,14 +10,13 @@ import (
 	"go.uber.org/zap"
 )
 
-const (
-	RegCtx = "RegCtx"
+type (
+	RegCtx      struct{}
+	regResource struct {
+		logger  *zap.Logger
+		regRepo domain.RegionRepository
+	}
 )
-
-type regResource struct {
-	logger  *zap.Logger
-	regRepo domain.RegionRepository
-}
 
 // Routes creates a REST router for the regions resource
 func (rs regResource) Routes() chi.Router {
@@ -30,7 +29,6 @@ func (rs regResource) Routes() chi.Router {
 		r.Use(rs.RegionCtx) // lets have a regions map, and lets actually load/manipulate
 		r.Get("/", rs.Get)  // GET /regions/{psgc_code} - read a single todo by :id
 	})
-
 	return r
 }
 
@@ -45,7 +43,7 @@ func (rs regResource) RegionCtx(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx = context.WithValue(ctx, RegCtx, item)
+		ctx = context.WithValue(ctx, RegCtx{}, item)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
@@ -63,13 +61,10 @@ func (rs regResource) RegionCtx(next http.Handler) http.Handler {
 //	@Failure		500		{object}	string	"Internal Server Error"
 //	@Router			/regions [get]
 func (rs regResource) List(w http.ResponseWriter, r *http.Request) {
-	// Get the context from the request
 	ctx := r.Context()
 
-	pageParams, ok := ctx.Value(PaginationParamsKey).(domain.PaginationParams)
+	pageParams, ok := ctx.Value(PaginationParamsKey{}).(domain.PaginationParams)
 	if !ok {
-		// Handle the case where pagination information is not found in the context
-		// You can choose to use default values or return an error response.
 		http.Error(w, "Pagination information not found", http.StatusBadRequest)
 		return
 	}
@@ -81,7 +76,6 @@ func (rs regResource) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Marshal and send the response
 	res, err := json.Marshal(data)
 	if err != nil {
 		http.Error(w, "Error marshaling response", http.StatusInternalServerError)
@@ -102,21 +96,18 @@ func (rs regResource) List(w http.ResponseWriter, r *http.Request) {
 //	@Param			psgc_code	path		string true	"Region PsgcCode"
 //	@Success		200			{object}	domain.Region
 //	@Failure		400			{object}	string	"Bad Request"
-//	@Failure		400			{object}	string	"Item Not Found"
+//	@Failure		404			{object}	string	"Item Not Found"
 //	@Failure		500			{object}	string	"Internal Server Error"
 //	@Router			/regions/{psgc_code} [get]
 func (rs regResource) Get(w http.ResponseWriter, r *http.Request) {
-	// Get the context from the request
 	ctx := r.Context()
 
-	item, ok := ctx.Value(RegCtx).(domain.Region)
+	item, ok := ctx.Value(RegCtx{}).(domain.Region)
 	if !ok {
-		// Handle the case where item is not found in the context
-		http.Error(w, "Item not found", http.StatusNotFound)
+		http.Error(w, domain.ErrNotFound.Error(), http.StatusNotFound)
 		return
 	}
 
-	// Marshal and send the response
 	res, err := json.Marshal(item)
 	if err != nil {
 		http.Error(w, "Error marshaling response", http.StatusInternalServerError)

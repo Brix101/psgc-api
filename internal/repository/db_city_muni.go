@@ -64,11 +64,10 @@ func (p *dbCityMuniRepository) paginatedQuery(
 	query := `SELECT * FROM city_muni`
 	countQuery := `SELECT COUNT(*) FROM city_muni`
 
-	if level != ""{
+	if level != "" {
 		query += fmt.Sprintf(" WHERE level = '%s'", level)
 		countQuery += fmt.Sprintf(" WHERE level = '%s'", level)
 	}
-
 
 	if params.Filter != "" {
 		query += `
@@ -96,8 +95,9 @@ func (p *dbCityMuniRepository) paginatedQuery(
 	}
 
 	totalItems := 0
-	p.conn.QueryRowContext(ctx, countQuery).
-		Scan(&totalItems)
+	if err := p.conn.QueryRowContext(ctx, countQuery).Scan(&totalItems); err != nil {
+		return domain.PaginatedCityMuni{}, err
+	}
 
 	totalPages := (totalItems + params.PerPage - 1) / params.PerPage
 
@@ -129,6 +129,7 @@ func (p *dbCityMuniRepository) GetAll(
 
 	return res, err
 }
+
 func (p *dbCityMuniRepository) GetById(
 	ctx context.Context,
 	psgcCode string,
@@ -154,6 +155,7 @@ func (p *dbCityMuniRepository) GetAllCity(
 
 	return res, err
 }
+
 func (p *dbCityMuniRepository) GetCityById(
 	ctx context.Context,
 	psgcCode string,
@@ -170,7 +172,6 @@ func (p *dbCityMuniRepository) GetCityById(
 	}
 	return accs[0], nil
 }
-
 
 func (p *dbCityMuniRepository) GetAllMunicipality(
 	ctx context.Context,
@@ -197,7 +198,6 @@ func (p *dbCityMuniRepository) GetMunicipalityById(
 	}
 	return accs[0], nil
 }
-
 
 func (p *dbCityMuniRepository) Create(
 	ctx context.Context,

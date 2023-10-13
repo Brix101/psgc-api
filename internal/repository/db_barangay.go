@@ -87,8 +87,9 @@ func (p *dbBarangayRepository) paginatedQuery(
 	}
 
 	totalItems := 0
-	p.conn.QueryRowContext(ctx, countQuery).
-		Scan(&totalItems)
+	if err := p.conn.QueryRowContext(ctx, countQuery).Scan(&totalItems); err != nil {
+		return domain.PaginatedBarangay{}, err
+	}
 
 	totalPages := (totalItems + params.PerPage - 1) / params.PerPage
 
@@ -120,7 +121,6 @@ func (p *dbBarangayRepository) GetAll(
 
 	return res, err
 }
-
 
 func (p *dbBarangayRepository) GetById(
 	ctx context.Context,

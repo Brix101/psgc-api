@@ -12,10 +12,11 @@ import (
 )
 
 const (
-	DefaultPage         = 1
-	DefaultPerPage      = 1000
-	PaginationParamsKey = "paginationParams"
+	DefaultPage    = 1
+	DefaultPerPage = 1000
 )
+
+type PaginationParamsKey struct{}
 
 func paginate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -63,7 +64,7 @@ func paginate(next http.Handler) http.Handler {
 
 		// Create a context with pagination information and pass it down the chain
 		ctx := context.WithValue(r.Context(),
-			PaginationParamsKey,
+			PaginationParamsKey{},
 			prms)
 
 		// Serve the request with the modified context

@@ -19,6 +19,6 @@ type PaginatedProvince struct {
 type ProvinceRepository interface {
 	GetAll(ctx context.Context, params PaginationParams) (PaginatedProvince, error)
 	GetById(ctx context.Context, psgcCode string) (Province, error)
-	
+
 	Create(ctx context.Context, reg *Masterlist) error
 }

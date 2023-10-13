@@ -96,6 +96,12 @@
                         }
                     },
                     "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
                         "description": "Item Not Found",
                         "schema": {
                             "type": "string"
@@ -198,6 +204,12 @@
                         }
                     },
                     "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
                         "description": "Item Not Found",
                         "schema": {
                             "type": "string"
@@ -270,7 +282,7 @@
                 }
             }
         },
-        "/city/{psgc_code}": {
+        "/cities/{psgc_code}": {
             "get": {
                 "description": "get string by PsgcCode",
                 "consumes": [
@@ -300,6 +312,12 @@
                         }
                     },
                     "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
                         "description": "Item Not Found",
                         "schema": {
                             "type": "string"
@@ -372,7 +390,7 @@
                 }
             }
         },
-        "/municipality/{psgc_code}": {
+        "/municipalities/{psgc_code}": {
             "get": {
                 "description": "get string by PsgcCode",
                 "consumes": [
@@ -504,6 +522,12 @@
                         }
                     },
                     "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
                         "description": "Item Not Found",
                         "schema": {
                             "type": "string"
@@ -606,6 +630,12 @@
                         }
                     },
                     "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
                         "description": "Item Not Found",
                         "schema": {
                             "type": "string"

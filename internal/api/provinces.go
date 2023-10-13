@@ -10,14 +10,13 @@ import (
 	"go.uber.org/zap"
 )
 
-const (
-	ProvCtx = "ProvCtx"
+type (
+	ProvCtx      struct{}
+	provResource struct {
+		logger   *zap.Logger
+		provRepo domain.ProvinceRepository
+	}
 )
-
-type provResource struct {
-	logger   *zap.Logger
-	provRepo domain.ProvinceRepository
-}
 
 // Routes creates a REST router for the provinces resource
 func (rs provResource) Routes() chi.Router {
@@ -45,7 +44,7 @@ func (rs provResource) ProvinceCtx(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx = context.WithValue(ctx, ProvCtx, item)
+		ctx = context.WithValue(ctx, ProvCtx{}, item)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
@@ -63,13 +62,10 @@ func (rs provResource) ProvinceCtx(next http.Handler) http.Handler {
 //	@Failure		500		{object}	string	"Internal Server Error"
 //	@Router			/provinces [get]
 func (rs provResource) List(w http.ResponseWriter, r *http.Request) {
-	// Get the context from the request
 	ctx := r.Context()
 
-	pageParams, ok := ctx.Value(PaginationParamsKey).(domain.PaginationParams)
+	pageParams, ok := ctx.Value(PaginationParamsKey{}).(domain.PaginationParams)
 	if !ok {
-		// Handle the case where pagination information is not found in the context
-		// You can choose to use default values or return an error response.
 		http.Error(w, "Pagination information not found", http.StatusBadRequest)
 		return
 	}
@@ -81,7 +77,6 @@ func (rs provResource) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Marshal and send the response
 	res, err := json.Marshal(data)
 	if err != nil {
 		http.Error(w, "Error marshaling response", http.StatusInternalServerError)
@@ -102,21 +97,18 @@ func (rs provResource) List(w http.ResponseWriter, r *http.Request) {
 //	@Param			psgc_code	path		string true	"Province PsgcCode"
 //	@Success		200			{object}	domain.Province
 //	@Failure		400			{object}	string	"Bad Request"
-//	@Failure		400			{object}	string	"Item Not Found"
+//	@Failure		404			{object}	string	"Item Not Found"
 //	@Failure		500			{object}	string	"Internal Server Error"
 //	@Router			/provinces/{psgc_code} [get]
 func (rs provResource) Get(w http.ResponseWriter, r *http.Request) {
-	// Get the context from the request
 	ctx := r.Context()
 
-	item, ok := ctx.Value(ProvCtx).(domain.Province)
+	item, ok := ctx.Value(ProvCtx{}).(domain.Province)
 	if !ok {
-		// Handle the case where item is not found in the context
-		http.Error(w, "Item not found", http.StatusNotFound)
+		http.Error(w, domain.ErrNotFound.Error(), http.StatusNotFound)
 		return
 	}
 
-	// Marshal and send the response
 	res, err := json.Marshal(item)
 	if err != nil {
 		http.Error(w, "Error marshaling response", http.StatusInternalServerError)

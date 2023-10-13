@@ -18,6 +18,6 @@ type PaginatedRegion struct {
 type RegionRepository interface {
 	GetAll(ctx context.Context, params PaginationParams) (PaginatedRegion, error)
 	GetById(ctx context.Context, psgcCode string) (Region, error)
-	
+
 	Create(ctx context.Context, reg *Masterlist) error
 }
