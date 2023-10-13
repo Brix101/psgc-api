@@ -20,13 +20,6 @@ definitions:
       psgc_code:
         type: string
     type: object
-  Masterlist:
-    properties:
-      name:
-        type: string
-      psgc_code:
-        type: string
-    type: object
   MetaData:
     properties:
       item_count:
@@ -59,15 +52,6 @@ definitions:
       data:
         items:
           $ref: '#/definitions/CityMuni'
-        type: array
-      metadata:
-        $ref: '#/definitions/MetaData'
-    type: object
-  PaginatedMasterlist:
-    properties:
-      data:
-        items:
-          $ref: '#/definitions/Masterlist'
         type: array
       metadata:
         $ref: '#/definitions/MetaData'
@@ -186,7 +170,7 @@ paths:
             type: string
       summary: Show a Barangay
       tags:
-      - barangays
+      - Barangays
   /citi_muni:
     get:
       consumes:
@@ -255,11 +239,11 @@ paths:
       summary: Show a City/Municipality
       tags:
       - Cities/Municipalities
-  /masterlist:
+  /cities:
     get:
       consumes:
       - application/json
-      description: get Masterlist
+      description: get Cities
       parameters:
       - description: This is filter for all the field in the  object
         example: filter
@@ -282,7 +266,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/PaginatedMasterlist'
+            $ref: '#/definitions/PaginatedCityMuni'
         "400":
           description: Bad Request
           schema:
@@ -291,9 +275,106 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      summary: Show list of Masterlist
+      summary: Show list of Cities
       tags:
-      - Masterlist
+      - Cities
+  /city/{psgc_code}:
+    get:
+      consumes:
+      - application/json
+      description: get string by PsgcCode
+      parameters:
+      - description: City PsgcCode
+        in: path
+        name: psgc_code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/CityMuni'
+        "400":
+          description: Item Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Show a City
+      tags:
+      - Cities
+  /municipalities:
+    get:
+      consumes:
+      - application/json
+      description: get Municipalities
+      parameters:
+      - description: This is filter for all the field in the  object
+        example: filter
+        in: query
+        name: filter
+        type: string
+      - example: 1
+        in: query
+        minimum: 0
+        name: page
+        type: integer
+      - example: 1000
+        in: query
+        maximum: 1000
+        name: per_page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/PaginatedCityMuni'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Show list of Municipalities
+      tags:
+      - Municipalities
+  /municipality/{psgc_code}:
+    get:
+      consumes:
+      - application/json
+      description: get string by PsgcCode
+      parameters:
+      - description: Municipality PsgcCode
+        in: path
+        name: psgc_code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/CityMuni'
+        "400":
+          description: Item Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Show a Municipality
+      tags:
+      - Municipalities
   /provinces:
     get:
       consumes:

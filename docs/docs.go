@@ -83,7 +83,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "barangays"
+                    "Barangays"
                 ],
                 "summary": "Show a Barangay",
                 "parameters": [
@@ -219,9 +219,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/masterlist": {
+        "/cities": {
             "get": {
-                "description": "get Masterlist",
+                "description": "get Cities",
                 "consumes": [
                     "application/json"
                 ],
@@ -229,9 +229,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Masterlist"
+                    "Cities"
                 ],
-                "summary": "Show list of Masterlist",
+                "summary": "Show list of Cities",
                 "parameters": [
                     {
                         "type": "string",
@@ -259,11 +259,157 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/PaginatedMasterlist"
+                            "$ref": "#/definitions/PaginatedCityMuni"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/city/{psgc_code}": {
+            "get": {
+                "description": "get string by PsgcCode",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cities"
+                ],
+                "summary": "Show a City",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "City PsgcCode",
+                        "name": "psgc_code",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/CityMuni"
+                        }
+                    },
+                    "400": {
+                        "description": "Item Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/municipalities": {
+            "get": {
+                "description": "get Municipalities",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Municipalities"
+                ],
+                "summary": "Show list of Municipalities",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "filter",
+                        "description": "This is filter for all the field in the  object",
+                        "name": "filter",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 0,
+                        "type": "integer",
+                        "example": 1,
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "maximum": 1000,
+                        "type": "integer",
+                        "example": 1000,
+                        "name": "per_page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/PaginatedCityMuni"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/municipality/{psgc_code}": {
+            "get": {
+                "description": "get string by PsgcCode",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Municipalities"
+                ],
+                "summary": "Show a Municipality",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Municipality PsgcCode",
+                        "name": "psgc_code",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/CityMuni"
+                        }
+                    },
+                    "400": {
+                        "description": "Item Not Found",
                         "schema": {
                             "type": "string"
                         }
@@ -514,17 +660,6 @@ const docTemplate = `{
                 }
             }
         },
-        "Masterlist": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "psgc_code": {
-                    "type": "string"
-                }
-            }
-        },
         "MetaData": {
             "type": "object",
             "properties": {
@@ -571,20 +706,6 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/CityMuni"
-                    }
-                },
-                "metadata": {
-                    "$ref": "#/definitions/MetaData"
-                }
-            }
-        },
-        "PaginatedMasterlist": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/Masterlist"
                     }
                 },
                 "metadata": {
