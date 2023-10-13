@@ -13,7 +13,7 @@ import (
 
 const (
 	DefaultPage    = 1
-	DefaultPerPage = 1000
+	DefaultPerPage = 100
 )
 
 type PaginationParamsKey struct{}
@@ -36,14 +36,14 @@ func paginate(next http.Handler) http.Handler {
 			perPage = DefaultPerPage
 		}
 
-		prms := domain.PaginationParams{
+		params := domain.PaginationParams{
 			Page:    page,
 			PerPage: perPage,
 			Filter:  filterParam,
 		}
 
 		validate := validator.New()
-		if err := validate.Struct(prms); err != nil {
+		if err := validate.Struct(params); err != nil {
 			validationErr, isValidationErr := err.(validator.ValidationErrors)
 			if isValidationErr {
 				fieldName := validationErr[0].Namespace()
@@ -63,9 +63,7 @@ func paginate(next http.Handler) http.Handler {
 		}
 
 		// Create a context with pagination information and pass it down the chain
-		ctx := context.WithValue(r.Context(),
-			PaginationParamsKey{},
-			prms)
+		ctx := context.WithValue(r.Context(), PaginationParamsKey{}, params)
 
 		// Serve the request with the modified context
 		next.ServeHTTP(w, r.WithContext(ctx))
