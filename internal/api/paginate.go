@@ -22,7 +22,7 @@ func paginate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Get the "page", "perPage", and "filter" query parameters from the URL
 		pageParam := r.URL.Query().Get("page")
-		perPageParam := r.URL.Query().Get("perPage")
+		perPageParam := r.URL.Query().Get("per_page")
 		filterParam := r.URL.Query().Get("filter")
 
 		// Parse the "page", "perPage", and "filter" query parameters
