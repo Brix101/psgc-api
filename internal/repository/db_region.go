@@ -119,6 +119,24 @@ func (p *dbRegionRepository) GetAll(
 	return res, err
 }
 
+func (p *dbRegionRepository) GetById(
+	ctx context.Context,
+	psgcCode string,
+) (domain.Region, error) {
+	query := `SELECT * FROM region WHERE psgc_code = $1`
+
+	accs, err := p.fetch(ctx, query, psgcCode)
+	if err != nil {
+		return domain.Region{}, err
+	}
+
+	if len(accs) == 0 {
+		return domain.Region{}, domain.ErrNotFound
+	}
+	return accs[0], nil
+}
+
+
 func (p *dbRegionRepository) Create(
 	ctx context.Context,
 	data *domain.Masterlist,
@@ -144,21 +162,3 @@ func (p *dbRegionRepository) Create(
 
 	return nil
 }
-
-func (p *dbRegionRepository) GetById(
-	ctx context.Context,
-	psgcCode string,
-) (domain.Region, error) {
-	query := `SELECT * FROM region WHERE psgc_code = $1`
-
-	accs, err := p.fetch(ctx, query, psgcCode)
-	if err != nil {
-		return domain.Region{}, err
-	}
-
-	if len(accs) == 0 {
-		return domain.Region{}, domain.ErrNotFound
-	}
-	return accs[0], nil
-}
-

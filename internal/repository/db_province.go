@@ -121,6 +121,24 @@ func (p *dbProvinceRepository) GetAll(
 	return res, err
 }
 
+
+func (p *dbProvinceRepository) GetById(
+	ctx context.Context,
+	psgcCode string,
+) (domain.Province, error) {
+	query := `SELECT * FROM province WHERE psgc_code = $1`
+
+	accs, err := p.fetch(ctx, query, psgcCode)
+	if err != nil {
+		return domain.Province{}, err
+	}
+
+	if len(accs) == 0 {
+		return domain.Province{}, domain.ErrNotFound
+	}
+	return accs[0], nil
+}
+
 func (p *dbProvinceRepository) Create(
 	ctx context.Context,
 	data *domain.Masterlist,
@@ -149,22 +167,5 @@ func (p *dbProvinceRepository) Create(
 	}
 
 	return nil
-}
-
-func (p *dbProvinceRepository) GetById(
-	ctx context.Context,
-	psgcCode string,
-) (domain.Province, error) {
-	query := `SELECT * FROM province WHERE psgc_code = $1`
-
-	accs, err := p.fetch(ctx, query, psgcCode)
-	if err != nil {
-		return domain.Province{}, err
-	}
-
-	if len(accs) == 0 {
-		return domain.Province{}, domain.ErrNotFound
-	}
-	return accs[0], nil
 }
 

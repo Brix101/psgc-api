@@ -11,58 +11,58 @@ import (
 )
 
 const (
-	CitiMuniCtx = "CityCtx"
+	CityCtx = "CityCtx"
 )
 
-type citiMuniResource struct {
+type cityResource struct {
 	logger       *zap.Logger
 	cityMuniRepo domain.CityMuniRepository
 }
 
 // Routes creates a REST router for the cities resource
-func (rs citiMuniResource) Routes() chi.Router {
+func (rs cityResource) Routes() chi.Router {
 	r := chi.NewRouter()
 	// r.Use() // some middleware..
 
-	r.With(paginate).Get("/", rs.List) // GET /citi_muni - read a list of cities
+	r.With(paginate).Get("/", rs.List) // GET /city - read a list of cities
 
 	r.Route("/{psgc_code}", func(r chi.Router) {
-		r.Use(rs.CitiMuniCtx) // lets have a cities map, and lets actually load/manipulate
-		r.Get("/", rs.Get)  // GET /citi_muni/{psgc_code} - read a single todo by :id
+		r.Use(rs.CitiesCtx) // lets have a cities map, and lets actually load/manipulate
+		r.Get("/", rs.Get)  // GET /city/{psgc_code} - read a single todo by :id
 	})
 
 	return r
 }
 
-func (rs citiMuniResource) CitiMuniCtx(next http.Handler) http.Handler {
+func (rs cityResource) CitiesCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		psgcCode := chi.URLParam(r, "psgc_code") // Get the {psgc_code} from the route
 
-		item, err := rs.cityMuniRepo.GetById(ctx, psgcCode)
+		item, err := rs.cityMuniRepo.GetCityById(ctx, psgcCode)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusNotFound)
 			return
 		}
 
-		ctx = context.WithValue(ctx, CitiMuniCtx, item)
+		ctx = context.WithValue(ctx, CityCtx, item)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 
 // ShowCities godoc
 //
-//	@Summary		Show list of Cities/Municipalities
-//	@Description	get Cities/Municipalities
-//	@Tags			Cities/Municipalities
+//	@Summary		Show list of Cities
+//	@Description	get Cities
+//	@Tags			Cities
 //	@Accept			json
 //	@Produce		json
 //	@Param			query	query		PaginationParams	false	"Pagination and filter parameters"
 //	@Success		200		{object}	PaginatedCityMuni
 //	@Failure		400		{object}	string	"Bad Request"
 //	@Failure		500		{object}	string	"Internal Server Error"
-//	@Router			/citi_muni [get]
-func (rs citiMuniResource) List(w http.ResponseWriter, r *http.Request) {
+//	@Router			/cities [get]
+func (rs cityResource) List(w http.ResponseWriter, r *http.Request) {
 	// Get the context from the request
 	ctx := r.Context()
 
@@ -74,7 +74,7 @@ func (rs citiMuniResource) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := rs.cityMuniRepo.GetAll(ctx, pageParams)
+	data, err := rs.cityMuniRepo.GetAllCity(ctx, pageParams)
 	if err != nil {
 		rs.logger.Error("failed to fetch cities from database", zap.Error(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -93,23 +93,22 @@ func (rs citiMuniResource) List(w http.ResponseWriter, r *http.Request) {
 }
 
 // ShowCities godoc
-//
-//	@Summary		Show a City/Municipality
+//	@Summary		Show a City
 //	@Description	get string by PsgcCode
-//	@Tags			Cities/Municipalities
+//	@Tags			Cities
 //	@Accept			json
 //	@Produce		json
-//	@Param			psgc_code	path		string true	"City/Municipality PsgcCode"
+//	@Param			psgc_code	path		string true	"City PsgcCode"
 //	@Success		200			{object}	domain.CityMuni
 //	@Failure		400			{object}	string	"Bad Request"
 //	@Failure		400			{object}	string	"Item Not Found"
 //	@Failure		500			{object}	string	"Internal Server Error"
-//	@Router			/citi_muni/{psgc_code} [get]
-func (rs citiMuniResource) Get(w http.ResponseWriter, r *http.Request) {
+//	@Router			/city/{psgc_code} [get]
+func (rs cityResource) Get(w http.ResponseWriter, r *http.Request) {
 	// Get the context from the request
 	ctx := r.Context()
 
-	item, ok := ctx.Value(CitiMuniCtx).(domain.CityMuni)
+	item, ok := ctx.Value(CityCtx).(domain.CityMuni)
 	if !ok {
 		// Handle the case where item is not found in the context
 		http.Error(w, "Item not found", http.StatusNotFound)

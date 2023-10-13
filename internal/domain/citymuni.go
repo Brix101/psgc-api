@@ -19,6 +19,12 @@ type PaginatedCityMuni struct {
 // CityMuniRepository represents the cityMuni's repository contract
 type CityMuniRepository interface {
 	GetAll(ctx context.Context, params PaginationParams) (PaginatedCityMuni, error)
-	Create(ctx context.Context, reg *Masterlist) error
 	GetById(ctx context.Context, psgcCode string) (CityMuni, error)
+	GetAllCity(ctx context.Context, params PaginationParams) (PaginatedCityMuni, error)
+	GetCityById(ctx context.Context, psgcCode string) (CityMuni, error)
+	GetAllMunicipality(ctx context.Context, params PaginationParams) (PaginatedCityMuni, error)
+	GetMunicipalityById(ctx context.Context, psgcCode string) (CityMuni, error)
+
+	
+	Create(ctx context.Context, reg *Masterlist) error
 }

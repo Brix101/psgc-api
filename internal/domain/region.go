@@ -17,6 +17,7 @@ type PaginatedRegion struct {
 // RegionRepository represents the region's repository contract
 type RegionRepository interface {
 	GetAll(ctx context.Context, params PaginationParams) (PaginatedRegion, error)
-	Create(ctx context.Context, reg *Masterlist) error
 	GetById(ctx context.Context, psgcCode string) (Region, error)
+	
+	Create(ctx context.Context, reg *Masterlist) error
 }

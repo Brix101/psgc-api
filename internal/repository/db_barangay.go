@@ -121,6 +121,24 @@ func (p *dbBarangayRepository) GetAll(
 	return res, err
 }
 
+
+func (p *dbBarangayRepository) GetById(
+	ctx context.Context,
+	psgcCode string,
+) (domain.Barangay, error) {
+	query := `SELECT * FROM barangay WHERE psgc_code = $1`
+
+	accs, err := p.fetch(ctx, query, psgcCode)
+	if err != nil {
+		return domain.Barangay{}, err
+	}
+
+	if len(accs) == 0 {
+		return domain.Barangay{}, domain.ErrNotFound
+	}
+	return accs[0], nil
+}
+
 func (p *dbBarangayRepository) Create(
 	ctx context.Context,
 	data *domain.Masterlist,
@@ -150,21 +168,3 @@ func (p *dbBarangayRepository) Create(
 
 	return nil
 }
-
-func (p *dbBarangayRepository) GetById(
-	ctx context.Context,
-	psgcCode string,
-) (domain.Barangay, error) {
-	query := `SELECT * FROM barangay WHERE psgc_code = $1`
-
-	accs, err := p.fetch(ctx, query, psgcCode)
-	if err != nil {
-		return domain.Barangay{}, err
-	}
-
-	if len(accs) == 0 {
-		return domain.Barangay{}, domain.ErrNotFound
-	}
-	return accs[0], nil
-}
-

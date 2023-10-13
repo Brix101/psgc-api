@@ -18,6 +18,8 @@ type PaginatedBarangay struct {
 // BarangayRepository represents the barangay's repository contract
 type BarangayRepository interface {
 	GetAll(ctx context.Context, params PaginationParams) (PaginatedBarangay, error)
-	Create(ctx context.Context, reg *Masterlist) error
 	GetById(ctx context.Context, psgcCode string) (Barangay, error)
+
+	
+	Create(ctx context.Context, reg *Masterlist) error
 }

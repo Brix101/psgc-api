@@ -11,58 +11,58 @@ import (
 )
 
 const (
-	CitiMuniCtx = "CityCtx"
+	MunicipalityCtx = "MunicipalityCtx"
 )
 
-type citiMuniResource struct {
+type munResource struct {
 	logger       *zap.Logger
 	cityMuniRepo domain.CityMuniRepository
 }
 
-// Routes creates a REST router for the cities resource
-func (rs citiMuniResource) Routes() chi.Router {
+// Routes creates a REST router for the municipalities resource
+func (rs munResource) Routes() chi.Router {
 	r := chi.NewRouter()
 	// r.Use() // some middleware..
 
-	r.With(paginate).Get("/", rs.List) // GET /citi_muni - read a list of cities
+	r.With(paginate).Get("/", rs.List) // GET /municipality - read a list of municipalities
 
 	r.Route("/{psgc_code}", func(r chi.Router) {
-		r.Use(rs.CitiMuniCtx) // lets have a cities map, and lets actually load/manipulate
-		r.Get("/", rs.Get)  // GET /citi_muni/{psgc_code} - read a single todo by :id
+		r.Use(rs.MunicipalitiesCtx) // lets have a municipalities map, and lets actually load/manipulate
+		r.Get("/", rs.Get)          // GET /municipality/{psgc_code} - read a single todo by :id
 	})
 
 	return r
 }
 
-func (rs citiMuniResource) CitiMuniCtx(next http.Handler) http.Handler {
+func (rs munResource) MunicipalitiesCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		psgcCode := chi.URLParam(r, "psgc_code") // Get the {psgc_code} from the route
 
-		item, err := rs.cityMuniRepo.GetById(ctx, psgcCode)
+		item, err := rs.cityMuniRepo.GetMunicipalityById(ctx, psgcCode)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusNotFound)
 			return
 		}
 
-		ctx = context.WithValue(ctx, CitiMuniCtx, item)
+		ctx = context.WithValue(ctx, MunicipalityCtx, item)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 
-// ShowCities godoc
+// ShowMunicipalities godoc
 //
-//	@Summary		Show list of Cities/Municipalities
-//	@Description	get Cities/Municipalities
-//	@Tags			Cities/Municipalities
+//	@Summary		Show list of Municipalities
+//	@Description	get Municipalities
+//	@Tags			Municipalities
 //	@Accept			json
 //	@Produce		json
 //	@Param			query	query		PaginationParams	false	"Pagination and filter parameters"
 //	@Success		200		{object}	PaginatedCityMuni
 //	@Failure		400		{object}	string	"Bad Request"
 //	@Failure		500		{object}	string	"Internal Server Error"
-//	@Router			/citi_muni [get]
-func (rs citiMuniResource) List(w http.ResponseWriter, r *http.Request) {
+//	@Router			/municipalities [get]
+func (rs munResource) List(w http.ResponseWriter, r *http.Request) {
 	// Get the context from the request
 	ctx := r.Context()
 
@@ -74,9 +74,9 @@ func (rs citiMuniResource) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := rs.cityMuniRepo.GetAll(ctx, pageParams)
+	data, err := rs.cityMuniRepo.GetAllMunicipality(ctx, pageParams)
 	if err != nil {
-		rs.logger.Error("failed to fetch cities from database", zap.Error(err))
+		rs.logger.Error("failed to fetch municipalities from database", zap.Error(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -92,24 +92,24 @@ func (rs citiMuniResource) List(w http.ResponseWriter, r *http.Request) {
 	w.Write(res)
 }
 
-// ShowCities godoc
+// ShowMunicipalities godoc
 //
-//	@Summary		Show a City/Municipality
+//	@Summary		Show a Municipality
 //	@Description	get string by PsgcCode
-//	@Tags			Cities/Municipalities
+//	@Tags			Municipalities
 //	@Accept			json
 //	@Produce		json
-//	@Param			psgc_code	path		string true	"City/Municipality PsgcCode"
+//	@Param			psgc_code	path		string true	"Municipality PsgcCode"
 //	@Success		200			{object}	domain.CityMuni
 //	@Failure		400			{object}	string	"Bad Request"
 //	@Failure		400			{object}	string	"Item Not Found"
 //	@Failure		500			{object}	string	"Internal Server Error"
-//	@Router			/citi_muni/{psgc_code} [get]
-func (rs citiMuniResource) Get(w http.ResponseWriter, r *http.Request) {
+//	@Router			/municipality/{psgc_code} [get]
+func (rs munResource) Get(w http.ResponseWriter, r *http.Request) {
 	// Get the context from the request
 	ctx := r.Context()
 
-	item, ok := ctx.Value(CitiMuniCtx).(domain.CityMuni)
+	item, ok := ctx.Value(MunicipalityCtx).(domain.CityMuni)
 	if !ok {
 		// Handle the case where item is not found in the context
 		http.Error(w, "Item not found", http.StatusNotFound)

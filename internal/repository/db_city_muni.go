@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"strings"
 
 	"github.com/Brix101/psgc-tool/internal/domain"
@@ -56,11 +57,18 @@ func (p *dbCityMuniRepository) fetch(
 
 func (p *dbCityMuniRepository) paginatedQuery(
 	ctx context.Context,
+	level string,
 	params domain.PaginationParams,
 ) (domain.PaginatedCityMuni, error) {
 	queryParams := []interface{}{}
 	query := `SELECT * FROM city_muni`
 	countQuery := `SELECT COUNT(*) FROM city_muni`
+
+	if level != ""{
+		query += fmt.Sprintf(" WHERE level = '%s'", level)
+		countQuery += fmt.Sprintf(" WHERE level = '%s'", level)
+	}
+
 
 	if params.Filter != "" {
 		query += `
@@ -117,10 +125,79 @@ func (p *dbCityMuniRepository) GetAll(
 	ctx context.Context,
 	params domain.PaginationParams,
 ) (domain.PaginatedCityMuni, error) {
-	res, err := p.paginatedQuery(ctx, params)
+	res, err := p.paginatedQuery(ctx, "", params)
 
 	return res, err
 }
+func (p *dbCityMuniRepository) GetById(
+	ctx context.Context,
+	psgcCode string,
+) (domain.CityMuni, error) {
+	query := `SELECT * FROM city_muni WHERE psgc_code = $1`
+
+	accs, err := p.fetch(ctx, query, psgcCode)
+	if err != nil {
+		return domain.CityMuni{}, err
+	}
+
+	if len(accs) == 0 {
+		return domain.CityMuni{}, domain.ErrNotFound
+	}
+	return accs[0], nil
+}
+
+func (p *dbCityMuniRepository) GetAllCity(
+	ctx context.Context,
+	params domain.PaginationParams,
+) (domain.PaginatedCityMuni, error) {
+	res, err := p.paginatedQuery(ctx, "City", params)
+
+	return res, err
+}
+func (p *dbCityMuniRepository) GetCityById(
+	ctx context.Context,
+	psgcCode string,
+) (domain.CityMuni, error) {
+	query := `SELECT * FROM city_muni WHERE level = 'City' AND psgc_code = $1`
+
+	accs, err := p.fetch(ctx, query, psgcCode)
+	if err != nil {
+		return domain.CityMuni{}, err
+	}
+
+	if len(accs) == 0 {
+		return domain.CityMuni{}, domain.ErrNotFound
+	}
+	return accs[0], nil
+}
+
+
+func (p *dbCityMuniRepository) GetAllMunicipality(
+	ctx context.Context,
+	params domain.PaginationParams,
+) (domain.PaginatedCityMuni, error) {
+	res, err := p.paginatedQuery(ctx, "Mun", params)
+
+	return res, err
+}
+
+func (p *dbCityMuniRepository) GetMunicipalityById(
+	ctx context.Context,
+	psgcCode string,
+) (domain.CityMuni, error) {
+	query := `SELECT * FROM city_muni WHERE level = 'Mun' AND psgc_code = $1`
+
+	accs, err := p.fetch(ctx, query, psgcCode)
+	if err != nil {
+		return domain.CityMuni{}, err
+	}
+
+	if len(accs) == 0 {
+		return domain.CityMuni{}, domain.ErrNotFound
+	}
+	return accs[0], nil
+}
+
 
 func (p *dbCityMuniRepository) Create(
 	ctx context.Context,
@@ -152,21 +229,3 @@ func (p *dbCityMuniRepository) Create(
 
 	return nil
 }
-
-func (p *dbCityMuniRepository) GetById(
-	ctx context.Context,
-	psgcCode string,
-) (domain.CityMuni, error) {
-	query := `SELECT * FROM city_muni WHERE psgc_code = $1`
-
-	accs, err := p.fetch(ctx, query, psgcCode)
-	if err != nil {
-		return domain.CityMuni{}, err
-	}
-
-	if len(accs) == 0 {
-		return domain.CityMuni{}, domain.ErrNotFound
-	}
-	return accs[0], nil
-}
-

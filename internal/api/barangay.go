@@ -96,7 +96,7 @@ func (rs bryResource) List(w http.ResponseWriter, r *http.Request) {
 //
 //	@Summary		Show a Barangay
 //	@Description	get string by PsgcCode
-//	@Tags			barangays
+//	@Tags			Barangays
 //	@Accept			json
 //	@Produce		json
 //	@Param			psgc_code	path		string true	"Barangay psgcCode"

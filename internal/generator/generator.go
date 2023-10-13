@@ -26,15 +26,13 @@ const (
 type Generator struct {
 	Filename string
 
-	mlistRepo    domain.MasterlistRepository
 	regRepo      domain.RegionRepository
 	provRepo     domain.ProvinceRepository
 	cityMuniRepo domain.CityMuniRepository
-	bgyRepo     domain.BarangayRepository
+	bgyRepo      domain.BarangayRepository
 }
 
 func NewGenerator(Filename string, db *sql.DB) *Generator {
-	mlistRepo := repository.NewDBMasterlist(db)
 	regRepo := repository.NewDBRegion(db)
 	provRepo := repository.NewDBProvince(db)
 	cityMuniRepo := repository.NewDBCityMuni(db)
@@ -43,11 +41,10 @@ func NewGenerator(Filename string, db *sql.DB) *Generator {
 	return &Generator{
 		Filename: Filename,
 
-		mlistRepo:    mlistRepo,
 		regRepo:      regRepo,
 		provRepo:     provRepo,
 		cityMuniRepo: cityMuniRepo,
-		bgyRepo:     brgyRepo,
+		bgyRepo:      brgyRepo,
 	}
 }
 
@@ -76,19 +73,7 @@ func (g *Generator) GenerateData(ctx context.Context, logger *zap.Logger) error 
 		wg.Add(1)
 		go func(i int, data *domain.Masterlist) {
 			defer wg.Done()
-			err := g.mlistRepo.Create(ctx, data)
-
-			switch data.Level {
-			case "Reg":
-				err = g.regRepo.Create(ctx, data)
-			case "Prov":
-				err = g.provRepo.Create(ctx, data)
-			case "City", "Mun":
-				err = g.cityMuniRepo.Create(ctx, data)
-			case "Bgy":
-				err = g.bgyRepo.Create(ctx, data)
-			default:
-			}
+			err := g.createRecord(ctx, data)
 
 			if err != nil {
 				logger.Error(
@@ -99,10 +84,7 @@ func (g *Generator) GenerateData(ctx context.Context, logger *zap.Logger) error 
 				)
 				errCh <- err
 			} else {
-
-				// Increment the counter when an item is processed successfully
 				atomic.AddInt32(&processedCount, 1)
-				logger.Info("Record created", zap.String("Level", data.Level), zap.Int("Index", i))
 			}
 		}(i, data)
 	}
@@ -128,4 +110,19 @@ func (g *Generator) GenerateData(ctx context.Context, logger *zap.Logger) error 
 
 	os.Exit(0)
 	return nil
+}
+
+func (g *Generator) createRecord(ctx context.Context, data *domain.Masterlist) error {
+	switch data.Level {
+	case "Reg":
+		return g.regRepo.Create(ctx, data)
+	case "Prov":
+		return g.provRepo.Create(ctx, data)
+	case "City", "Mun":
+		return g.cityMuniRepo.Create(ctx, data)
+	case "Bgy":
+		return g.bgyRepo.Create(ctx, data)
+	default:
+		return nil
+	}
 }
