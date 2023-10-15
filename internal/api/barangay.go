@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/Brix101/psgc-tool/internal/domain"
+	"github.com/Brix101/psgc-tool/internal/util"
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
 )
@@ -23,7 +24,7 @@ func (rs bryResource) Routes() chi.Router {
 	r := chi.NewRouter()
 	// r.Use() // some middleware..
 
-	r.With(paginate).Get("/", rs.List) // GET /barangays - read a list of barangays
+	r.With(util.Paginate).Get("/", rs.List) // GET /barangays - read a list of barangays
 
 	r.Route("/{psgc_code}", func(r chi.Router) {
 		r.Use(rs.BarangayCtx) // lets have a barangays map, and lets actually load/manipulate
@@ -64,7 +65,7 @@ func (rs bryResource) BarangayCtx(next http.Handler) http.Handler {
 func (rs bryResource) List(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	pageParams, ok := ctx.Value(PaginationParamsKey{}).(domain.PaginationParams)
+	pageParams, ok := ctx.Value(util.PaginateCtx{}).(domain.PaginationParams)
 	if !ok {
 		http.Error(w, "Pagination information not found", http.StatusBadRequest)
 		return

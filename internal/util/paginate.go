@@ -1,4 +1,4 @@
-package api
+package util
 
 import (
 	"context"
@@ -16,9 +16,9 @@ const (
 	DefaultPerPage = 100
 )
 
-type PaginationParamsKey struct{}
+type PaginateCtx struct{}
 
-func paginate(next http.Handler) http.Handler {
+func Paginate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Get the "page", "perPage", and "filter" query parameters from the URL
 		pageParam := r.URL.Query().Get("page")
@@ -63,7 +63,7 @@ func paginate(next http.Handler) http.Handler {
 		}
 
 		// Create a context with pagination information and pass it down the chain
-		ctx := context.WithValue(r.Context(), PaginationParamsKey{}, params)
+		ctx := context.WithValue(r.Context(), PaginateCtx{}, params)
 
 		// Serve the request with the modified context
 		next.ServeHTTP(w, r.WithContext(ctx))
