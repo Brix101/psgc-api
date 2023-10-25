@@ -18,7 +18,7 @@ func APICmd(ctx context.Context) *cobra.Command {
 		Use:   "api",
 		Args:  cobra.ExactArgs(0),
 		Short: "Runs the RESTful API.",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			if os.Getenv("PORT") != "" {
 				port, _ = strconv.Atoi(os.Getenv("PORT"))
 			}
