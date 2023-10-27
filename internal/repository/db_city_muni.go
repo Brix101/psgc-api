@@ -65,13 +65,15 @@ func (p *dbCityMuniRepository) paginatedQuery(
 	countQuery := `SELECT COUNT(*) FROM city_muni`
 
 	if level != "" {
-		query += fmt.Sprintf(" WHERE level = '%s'", level)
+		query += fmt.Sprintf(" WHERE level = '%s' AND", level)
 		countQuery += fmt.Sprintf(" WHERE level = '%s'", level)
+	} else {
+		query += " WHERE "
 	}
 
 	if params.Filter != "" {
 		query += `
-			WHERE (
+			(
                 LOWER(psgc_code) LIKE '%' || LOWER($1) || '%' OR
                 LOWER(name) LIKE '%' || LOWER($1) || '%' 
             )
