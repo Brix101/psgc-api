@@ -61,14 +61,14 @@ func (p *dbBarangayRepository) paginatedQuery(
 	query := `SELECT * FROM barangay`
 	countQuery := `SELECT COUNT(*) FROM barangay`
 
-	if params.Filter != "" {
+	if params.Keyword != "" {
 		query += `
 			WHERE (
                 LOWER(psgc_code) LIKE '%' || LOWER($1) || '%' OR
                 LOWER(name) LIKE '%' || LOWER($1) || '%' 
             )
         `
-		queryParams = append(queryParams, params.Filter)
+		queryParams = append(queryParams, params.Keyword)
 	}
 
 	// Add sorting by name in ascending order.

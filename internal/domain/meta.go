@@ -12,6 +12,6 @@ type MetaData struct {
 type PaginationParams struct {
 	Page    int    `json:"page"    example:"1"      validate:"gte=0"`
 	PerPage int    `json:"per_page" example:"1000"   validate:"lte=1000"`
-	Filter  string `json:"filter"  example:"filter"` // This is filter for all the field in the  object
+	Keyword string `json:"keyword"  example:"keyword"` // Keyword is used for filtering
 } //@name PaginationParams
 // INFO? comment above is for renaming stuct

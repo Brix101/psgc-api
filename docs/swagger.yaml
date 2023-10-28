@@ -109,10 +109,10 @@ paths:
       - application/json
       description: get Barangays
       parameters:
-      - description: This is filter for all the field in the  object
-        example: filter
+      - description: Keyword is used for filtering
+        example: keyword
         in: query
-        name: filter
+        name: keyword
         type: string
       - example: 1
         in: query
@@ -181,10 +181,10 @@ paths:
       - application/json
       description: get Cities/Municipalities
       parameters:
-      - description: This is filter for all the field in the  object
-        example: filter
+      - description: Keyword is used for filtering
+        example: keyword
         in: query
-        name: filter
+        name: keyword
         type: string
       - example: 1
         in: query
@@ -253,10 +253,10 @@ paths:
       - application/json
       description: get Cities
       parameters:
-      - description: This is filter for all the field in the  object
-        example: filter
+      - description: Keyword is used for filtering
+        example: keyword
         in: query
-        name: filter
+        name: keyword
         type: string
       - example: 1
         in: query
@@ -325,10 +325,10 @@ paths:
       - application/json
       description: get Municipalities
       parameters:
-      - description: This is filter for all the field in the  object
-        example: filter
+      - description: Keyword is used for filtering
+        example: keyword
         in: query
-        name: filter
+        name: keyword
         type: string
       - example: 1
         in: query
@@ -393,10 +393,10 @@ paths:
       - application/json
       description: get Provinces
       parameters:
-      - description: This is filter for all the field in the  object
-        example: filter
+      - description: Keyword is used for filtering
+        example: keyword
         in: query
-        name: filter
+        name: keyword
         type: string
       - example: 1
         in: query
@@ -465,10 +465,10 @@ paths:
       - application/json
       description: get Regions
       parameters:
-      - description: This is filter for all the field in the  object
-        example: filter
+      - description: Keyword is used for filtering
+        example: keyword
         in: query
-        name: filter
+        name: keyword
         type: string
       - example: 1
         in: query

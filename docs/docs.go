@@ -31,9 +31,9 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "example": "filter",
-                        "description": "This is filter for all the field in the  object",
-                        "name": "filter",
+                        "example": "keyword",
+                        "description": "Keyword is used for filtering",
+                        "name": "keyword",
                         "in": "query"
                     },
                     {
@@ -139,9 +139,9 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "example": "filter",
-                        "description": "This is filter for all the field in the  object",
-                        "name": "filter",
+                        "example": "keyword",
+                        "description": "Keyword is used for filtering",
+                        "name": "keyword",
                         "in": "query"
                     },
                     {
@@ -247,9 +247,9 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "example": "filter",
-                        "description": "This is filter for all the field in the  object",
-                        "name": "filter",
+                        "example": "keyword",
+                        "description": "Keyword is used for filtering",
+                        "name": "keyword",
                         "in": "query"
                     },
                     {
@@ -355,9 +355,9 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "example": "filter",
-                        "description": "This is filter for all the field in the  object",
-                        "name": "filter",
+                        "example": "keyword",
+                        "description": "Keyword is used for filtering",
+                        "name": "keyword",
                         "in": "query"
                     },
                     {
@@ -457,9 +457,9 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "example": "filter",
-                        "description": "This is filter for all the field in the  object",
-                        "name": "filter",
+                        "example": "keyword",
+                        "description": "Keyword is used for filtering",
+                        "name": "keyword",
                         "in": "query"
                     },
                     {
@@ -565,9 +565,9 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "example": "filter",
-                        "description": "This is filter for all the field in the  object",
-                        "name": "filter",
+                        "example": "keyword",
+                        "description": "Keyword is used for filtering",
+                        "name": "keyword",
                         "in": "query"
                     },
                     {

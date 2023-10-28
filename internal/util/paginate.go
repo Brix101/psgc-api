@@ -20,12 +20,12 @@ type PaginateCtx struct{}
 
 func Paginate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Get the "page", "perPage", and "filter" query parameters from the URL
+		// Get the "page", "perPage", and "keyword" query parameters from the URL
 		pageParam := r.URL.Query().Get("page")
 		perPageParam := r.URL.Query().Get("per_page")
-		filterParam := r.URL.Query().Get("filter")
+		keywordParam := r.URL.Query().Get("keyword")
 
-		// Parse the "page", "perPage", and "filter" query parameters
+		// Parse the "page", "perPage", and "keyword" query parameters
 		page, err := strconv.Atoi(pageParam)
 		if err != nil || page <= 0 {
 			page = DefaultPage
@@ -39,7 +39,7 @@ func Paginate(next http.Handler) http.Handler {
 		params := domain.PaginationParams{
 			Page:    page,
 			PerPage: perPage,
-			Filter:  filterParam,
+			Keyword: keywordParam,
 		}
 
 		validate := validator.New()

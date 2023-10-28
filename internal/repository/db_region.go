@@ -59,14 +59,14 @@ func (p *dbRegionRepository) paginatedQuery(
 	query := `SELECT * FROM region`
 	countQuery := `SELECT COUNT(*) FROM region`
 
-	if params.Filter != "" {
+	if params.Keyword != "" {
 		query += `
 			WHERE (
                 LOWER(psgc_code) LIKE '%' || LOWER($1) || '%' OR
                 LOWER(name) LIKE '%' || LOWER($1) || '%' 
             )
         `
-		queryParams = append(queryParams, params.Filter)
+		queryParams = append(queryParams, params.Keyword)
 	}
 
 	// Add sorting by name in ascending order.
